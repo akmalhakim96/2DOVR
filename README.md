@@ -1,7 +1,7 @@
 # Two dimensional optimal velocity robot
 
 2017 6/20
-githubにアップ
+BeagleBone Black用のプログラムなどをgithubにアップ
 
 2017 4/27
 170107_2dovr_B2r2 から継承
