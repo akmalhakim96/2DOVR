@@ -1,4 +1,5 @@
-Name
+
+Two dimensional optimal velocity robot
 ====
 
 Overview
@@ -27,7 +28,7 @@ Overview
 
 
 
-# Two dimensional optimal velocity robot
+ 
 
 2017 6/20
 BeagleBone Black用のプログラムなどをgithubにアップ
