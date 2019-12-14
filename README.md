@@ -11,7 +11,8 @@ Overview
 
 ## Description
 ２次元最適速度モデルで速度が制御される走行ロボット
-<img src="https://latex.codecogs.com/gif.latex?\ddot{x}(t)=a\{V(r_{jk}) \}" />
+
+<img src="https://latex.codecogs.com/gif.latex?\ddot{x}_j=a\{\sum_k&space;V(r_{kj})-\dot{x}_j&space;\}" title="\ddot{x}_j=a\{\sum_k V(r_{kj})-\dot{x}_j \}" />
 
 ## Demo
 https://www.facebook.com/FSFRB/
