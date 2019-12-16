@@ -4,7 +4,7 @@ Two dimensional optimal velocity robot
 
 Overview
 
-![2dOV](http://traffic.phys.cs.is.nagoya-u.ac.jp/~mstf/pdf/mstf2016-11.pdf)モデルは２次元平面における生物などの行動を
+2dOVモデルは２次元平面における生物などの行動を
 数理モデル化したものである．
 紐状の運動など，変化に富んだ集団行動を再現することが知られている．
 このレポジトリでは，その2dOVモデルをアルゴリズム化し，２次元平面を走行するロボットに適用するプログラムを開発する．
@@ -12,7 +12,7 @@ Overview
 ## Description
 ２次元最適速度モデルで速度が制御される走行ロボット
 
-https://github.com/HondaLab/2DOVR
+https://github.com/HondaLab/2DOVR/wiki
 
 ## Demo
 https://www.facebook.com/FSFRB/
