@@ -12,7 +12,7 @@ Two dimensional optimal velocity robot
 
 ## Description
 詳しくは
-[https://github.com/HondaLab/2DOVR/wiki](このレポジトリのwiki)を参照してください．
+[このレポジトリのwiki](https://github.com/HondaLab/2DOVR/wiki)を参照してください．
 
 ## Demo
 https://www.facebook.com/FSFRB/
