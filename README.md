@@ -12,7 +12,7 @@ Overview
 ## Description
 ２次元最適速度モデルで速度が制御される走行ロボット
 
-<img src="https://latex.codecogs.com/gif.latex?\ddot{x}_j(t)=a\left\{\sum_k&space;V(r_{kj})-\dot{x}_j(t)&space;\right\}" />
+https://github.com/HondaLab/2DOVR
 
 ## Demo
 https://www.facebook.com/FSFRB/
