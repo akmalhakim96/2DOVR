@@ -39,13 +39,6 @@ BeagleBone Black用のプログラムなどをgithubにアップ
 Raspberry Pi3 で走行ロボット開発開始
 
 
-## Licence
-
-[CC-BY-NC-SA](https://)
-
-## Author
-
-[Yasushi Honda](https://github.com/HondaLab)
 
 
 
