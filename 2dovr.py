@@ -134,10 +134,10 @@ while key!=ord('q'):
             
             vl = vl * MAX_SPEED
             vr = vr * MAX_SPEED
-            #print("\r %6.2f " % (now-start),end="")
+            print("\r %6.2f " % (now-start),end="")
             #print(" %s " % mode,end="")
-            #print(" dist=%6.2f " % dist, end="")
-            #print(" theta=%6.2f " % theta, end="")
+            print(" dist=%6.2f " % dist, end="")
+            print(" theta=%6.2f " % theta, end="")
             #print(" d_theta=%8.4f " % d_theta, end="")
             #print(" v_L=%6.2f " % vl, end="")
             #print(" v_R=%6.2f " % vr, end="")

@@ -70,16 +70,21 @@ class Optimal_Velocity_class:
         self.vx = 0.1
         self.vy = 0.1
         self.d = 0.06
-        self.conversion_v = 1 / 0.525
-
+        print("%5.2f " % self.a,end="")
+        print("%5.2f " % self.alpha,end="")
+        print("%5.2f " % self.beta,end="")
+        print("%5.2f " % self.b,end="")
+        print("%5.2f " % self.c,end="")
+        print("%5.2f " % self.d)
+   
     def calc(self,distance,theta,dt):
 
         f_rkj = self.alpha*(tanh(self.beta*(distance - self.b)) + self.c ) #(3)式
         
         #print("\r f_rkj=%7.3f" % f_rkj,end="")
 
-        nx = cos(theta)
-        ny = sin(theta)
+        nx = sin(theta)
+        ny = cos(theta)
         #print("nx=%7.3f" % nx,end="")
         #print(" ny=%7.3f" % ny,end="")
 
