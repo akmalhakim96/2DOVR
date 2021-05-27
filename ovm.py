@@ -70,12 +70,18 @@ class Optimal_Velocity_class:
         self.vx = 0.1
         self.vy = 0.1
         self.d = 0.06
-        print("%5.2f " % self.a,end="")
-        print("%5.2f " % self.alpha,end="")
-        print("%5.2f " % self.beta,end="")
-        print("%5.2f " % self.b,end="")
-        print("%5.2f " % self.c,end="")
-        print("%5.2f " % self.d)
+        print("#     a ",end="")
+        print("  alpha ",end="")
+        print("   beta ",end="")
+        print("      b ",end="")
+        print("      c ",end="")
+        print("      d ")
+        print("%7.3f " % self.a,end="")
+        print("%7.3f " % self.alpha,end="")
+        print("%7.3f " % self.beta,end="")
+        print("%7.3f " % self.b,end="")
+        print("%7.3f " % self.c,end="")
+        print("%7.3f " % self.d)
    
     def calc(self,distance,theta,dt):
 
