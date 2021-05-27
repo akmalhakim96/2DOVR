@@ -130,7 +130,7 @@ while key!=ord('q'):
             mode = "picam"
             dist = float(dist)
             # pixyカメラで物体を認識している時
-            vl, vr, d_theta = ovm.calc(dist,theta,dt)
+            vl, vr, omega = ovm.calc(dist,theta,dt)
             
             vl = vl * MAX_SPEED
             vr = vr * MAX_SPEED
@@ -138,7 +138,7 @@ while key!=ord('q'):
             #print(" %s " % mode,end="")
             print(" dist=%6.2f " % dist, end="")
             print(" theta=%6.2f " % theta, end="")
-            #print(" d_theta=%8.4f " % d_theta, end="")
+            print(" omega=%8.4f " % omega, end="")
             #print(" v_L=%6.2f " % vl, end="")
             #print(" v_R=%6.2f " % vr, end="")
             #print(" ratio=%8.6f " % (vl/vr),end="")
@@ -171,9 +171,7 @@ while key!=ord('q'):
             vr =100   # 閾値処理
         if vr < -100: # -1 < v_r < 1
             vr = -100 #
-        print("%6.2f " % (now-start),end="")
-        #print(" %6.4f " % vl,end="")
-        #print(" %6.4f" % vr)
+
         mL.run(vl)
         mR.run(vr)
         cv2.imshow("frame",frame)
@@ -182,7 +180,6 @@ while key!=ord('q'):
         last = now
         now = time.time()
         dt = now-last
-        #print("\r dt=%4.2f" % (dt))
     except KeyboardInterrupt:
         mR.stop()
         mL.stop()

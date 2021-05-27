@@ -67,9 +67,9 @@ class Optimal_Velocity_class:
         self.beta = parm[3]  #αβで最適速度関数の変化率を決定
         self.b = parm[4]     #変曲点のx座標(ロボットの車頭距離にする)
         self.c = parm[5]     #前進後退の割合決定
-        self.vx = 0.1
+        self.vx = 0.0
         self.vy = 0.1
-        self.d = 0.06
+        self.d = 1.00
         print("#     a ",end="")
         print("  alpha ",end="")
         print("   beta ",end="")
@@ -91,44 +91,23 @@ class Optimal_Velocity_class:
 
         nx = sin(theta)
         ny = cos(theta)
-        #print("nx=%7.3f" % nx,end="")
-        #print(" ny=%7.3f" % ny,end="")
 
         large_v_x = (1+cos(theta)) * f_rkj * nx
         large_v_y = (1+cos(theta)) * f_rkj * ny
-        #print("\r large_v_x=%7.3f" % large_v_x,end="")
-        #print(" large_v_y=%7.3f" % large_v_y,end="")
 
         ax = self.a * (self.vs + large_v_x - self.vx)
         ay = self.a * (self.vs + large_v_y - self.vy)
-        #print(" vx=%7.3f" % self.vx,end="")
-        #print(" vy=%7.3f" % self.vy)
 
-        vx_next = self.vx + dt * ax
-        vy_next = self.vy + dt * ay
+        self.vx = self.vx + dt * ax
+        self.vy = self.vy + dt * ay
 
-        v = sqrt_2(self.vx,self.vy) 
-        v_next = sqrt_2(vx_next,vy_next)
-        #print("\r              v=%7.3f" % v,end="")
-        #print(" v_next=%7.3f" % v_next,end="")
 
-        out_z = vx_next * self.vy - vy_next * self.vx
-        inner_v = self.vx * vx_next + self.vy * vy_next
+        omega=math.atan(self.vx/self.vy)
 
-        in_acos = (inner_v/(v*v_next))
-        #print("\r acosの内部",in_acos,end="")
-        d_theta = sgn(out_z)*acos(inner_v/(v*v_next))
-        #print("d_theta =  %6.4f" % d_theta)
-        right = v - (self.d * ( d_theta / dt) ) #* self.conversion_v
-        left = v + (self.d * ( d_theta / dt) )  #* self.conversion_v
+        left = self.vy + self.d * omega
+        right = self.vy - self.d * omega
 
-        #print("left=%7.3f" % left,end="")
-        #print(" right=%7.3f" % right)
-
-        self.vx = vx_next #OK
-        self.vy = vy_next #OK
-        
         left = left/(2.0*self.alpha*(1+self.c))
         right = right/(2.0*self.alpha*(1+self.c))
         
-        return left,right,d_theta
+        return left,right,omega
