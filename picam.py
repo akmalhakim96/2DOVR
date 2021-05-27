@@ -15,9 +15,6 @@ import socket
 #import socket1a as sk
 
 
-#  定数を定義
-MY_IP = "172.16.7.42"
-
 
 class PI_CAMERA_CLASS():
    def __init__(self):
@@ -103,7 +100,7 @@ class PI_CAMERA_CLASS():
          height = self.data[3]
          cpx = px + (width/2)
          cpy = py + (height/2)
-         rad = (160-cpx)*(52/160)*(np.pi/180)
+         rad = (cpx-160)*(52/160)*(np.pi/180)
          angle = np.rad2deg(rad)
          dis = (self.A/(width**self.C)) + self.B + (self.D*(abs(rad)**self.E))
          dis = float(dis/100)

@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+#  Yasushi Honda 2021 5/27
 #  2dovr_210513.py
 #  2021-04-16
 #  Masashi Yamada
@@ -22,8 +23,6 @@ import modules.tof2_3a as lidar      #  赤外線レーザーレーダ 2つの�
 import socket
 
 
-#  定数を定義
-MY_IP = "172.16.7.42"
 
 select_hsv = "y"
 
