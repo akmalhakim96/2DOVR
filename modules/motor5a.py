@@ -26,6 +26,7 @@ class Motor:
       self.pi.set_servo_pulsewidth(self.gpio, MID_WIDTH+power)
 
    def stop(self):
+      self.move(0)
       self.pi.stop()
 
 class Lmotor(Motor):

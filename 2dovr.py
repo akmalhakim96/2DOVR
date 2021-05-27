@@ -25,7 +25,7 @@ import socket
 #  定数を定義
 MY_IP = "172.16.7.42"
 
-select_hsv = "n"
+select_hsv = "y"
 
 SLEEP = 0.2
 EX_TIME = 3    #  (min)
@@ -175,8 +175,8 @@ while key!=ord('q'):
         print("%6.2f " % (now-start),end="")
         #print(" %6.4f " % vl,end="")
         #print(" %6.4f" % vr)
-        #mL.run(vl)
-        #mR.run(vr)
+        mL.run(vl)
+        mR.run(vr)
         cv2.imshow("frame",frame)
         key=cv2.waitKey(1)
         time.sleep(DT)
