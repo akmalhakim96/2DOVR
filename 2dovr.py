@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+#  Yasushi Honda 2021 5/27
 #  2dovr_210513.py
 #  2021-04-16
 #  Masashi Yamada
@@ -22,8 +23,6 @@ import modules.tof2_3a as lidar      #  赤外線レーザーレーダ 2つの�
 import socket
 
 
-#  定数を定義
-MY_IP = "172.16.7.42"
 
 select_hsv = "y"
 
@@ -131,15 +130,15 @@ while key!=ord('q'):
             mode = "picam"
             dist = float(dist)
             # pixyカメラで物体を認識している時
-            vl, vr, d_theta = ovm.calc(dist,theta,dt)
+            vl, vr, omega = ovm.calc(dist,theta,dt)
             
             vl = vl * MAX_SPEED
             vr = vr * MAX_SPEED
-            #print("\r %6.2f " % (now-start),end="")
+            print("\r %6.2f " % (now-start),end="")
             #print(" %s " % mode,end="")
-            #print(" dist=%6.2f " % dist, end="")
-            #print(" theta=%6.2f " % theta, end="")
-            #print(" d_theta=%8.4f " % d_theta, end="")
+            print(" dist=%6.2f " % dist, end="")
+            print(" theta=%6.2f " % theta, end="")
+            print(" omega=%8.4f " % omega, end="")
             #print(" v_L=%6.2f " % vl, end="")
             #print(" v_R=%6.2f " % vr, end="")
             #print(" ratio=%8.6f " % (vl/vr),end="")
@@ -172,9 +171,7 @@ while key!=ord('q'):
             vr =100   # 閾値処理
         if vr < -100: # -1 < v_r < 1
             vr = -100 #
-        print("%6.2f " % (now-start),end="")
-        #print(" %6.4f " % vl,end="")
-        #print(" %6.4f" % vr)
+
         mL.run(vl)
         mR.run(vr)
         cv2.imshow("frame",frame)
@@ -183,7 +180,6 @@ while key!=ord('q'):
         last = now
         now = time.time()
         dt = now-last
-        #print("\r dt=%4.2f" % (dt))
     except KeyboardInterrupt:
         mR.stop()
         mL.stop()
@@ -193,12 +189,6 @@ mR.stop()
 mL.stop()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
 print()
-print("===============================")
-print("=  実験終了  =")
-print("===============================")
-print()
-print("===============================")
-print("=  実験結果  =")
 print("===============================")
 print("=  実験時間 {:.1f} (sec)".format(now-start))
 print("=  q_s--->")
