@@ -14,29 +14,16 @@ Two dimensional optimal velocity robot
 詳しくは
 [このレポジトリのwiki](https://github.com/HondaLab/2DOVR/wiki)を参照してください．
 
-## Demo
-https://www.facebook.com/FSFRB/
-
 ## Requirement
   * Raspberry Pi3
   * Parallax High speed continuous servo (x2)
-  * PIXYCMU
-  * 2S LiPo battery
-  * DC-DC convertar
 
-## Usage
-
-## Install
-
-## Contribution
 
 ## History
-2017 6/20
-BeagleBone Black用のプログラムなどをgithubにアップ
-
-2017 4/27
-170107_2dovr_B2r2 から継承
-Raspberry Pi3 で走行ロボット開発開始
+2021 5/26
+omega = atanh(vx/vy)
+vL= v + r * omega
+vR= v - r * omega
 
 
 
