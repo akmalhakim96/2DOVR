@@ -19,22 +19,23 @@ class Motor:
       if not self.pi.connected:
          exit()
       self.pi.set_servo_pulsewidth(gpio, MID_WIDTH)
+      self.SLEEP=0.02
       #time.sleep(0.1)
 
    def move(self,power):
       self.pi.set_servo_pulsewidth(self.gpio, MID_WIDTH+power)
-      time.sleep(0.02)    
+      time.sleep(self.SLEEP)    
 
    def stop(self):
       self.pi.stop()
 
 class Lmotor(Motor):
    def run(self,power):
-      self.move(power)
+      self.move(-power*5)
 
 class Rmotor(Motor):
    def run(self,power):
-      self.move(-power)
+      self.move(power*5)
        
 if __name__=='__main__':
 
