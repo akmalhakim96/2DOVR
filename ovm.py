@@ -69,7 +69,7 @@ class Optimal_Velocity_class:
         self.c = parm[5]     #前進後退の割合決定
         self.vx = 0.0
         self.vy = 0.1
-        self.d = 1.00
+        self.d = 5.00
         print("#     a ",end="")
         print("  alpha ",end="")
         print("   beta ",end="")
