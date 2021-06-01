@@ -85,7 +85,7 @@ def shutdown(tof,tof1):
 
 
 if __name__=="__main__":
-   import keyin
+   import modules.keyin as keyin
 
    tof,tof1=start()
 

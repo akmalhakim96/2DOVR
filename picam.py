@@ -130,7 +130,7 @@ class PI_CAMERA_CLASS():
       cv2.destroyAllWindows()
 
       h_range=20 # 色相の許容範囲
-      s_range=100 # 彩度の許容範囲
+      s_range=80 # 彩度の許容範囲
       v_range=80 # 明度の許容範囲
       #cvtColorでつくったhsv配列はy,xの順序なので注意
       hL=hsv[y,x,0]-h_range
