@@ -24,7 +24,7 @@ import socket
 
 
 
-select_hsv = "y"
+select_hsv = "n"
 
 SLEEP = 0.2
 EX_TIME = 3    #  (min)
@@ -111,8 +111,9 @@ if select_hsv=='y':
 else:
     #Red Cup H:S:V=3:140:129
     # h,s,v = 171,106,138
-    H = 174; S = 151; V = 172
-    h_range = 10; s_range = 80; v_range = 60 # 明度の許容範囲
+    # 177  139  141 2021/06/01
+    H = 177; S = 139; V = 141
+    h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
 start = time.time()
