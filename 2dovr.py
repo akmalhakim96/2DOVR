@@ -164,8 +164,8 @@ while key!=ord('q'):
         tof_l = tanh(lidar_distanceR)
         #print("\r %s v_L=%6.2f v_R=%6.2f" % (mode,vl,vr),end="")
 
-        vl = tof_l * MAX_SPEED 
-        vr = tof_r * MAX_SPEED
+        vl = vl * tof_l * MAX_SPEED 
+        vr = vr * tof_r * MAX_SPEED
         if vl > 100:  # 左モータに対する
             vl =100   # 閾値処理
         if vl < -100: # -1 < v_l < 1
