@@ -132,13 +132,13 @@ while key!=ord('q'):
             # pixyカメラで物体を認識している時
             vl, vr, omega = ovm.calc(dist,theta,dt)
             
-            #print("\r %6.2f " % (now-start),end="")
+            print("\r %6.2f " % (now-start),end="")
             #print(" %s " % mode,end="")
-            #print(" dist=%6.2f " % dist, end="")
-            #print(" theta=%6.2f " % theta, end="")
+            print(" dist=%6.2f " % dist, end="")
+            print(" theta=%6.2f " % theta, end="")
             #print(" omega=%8.4f " % omega, end="")
-            #print(" v_L=%6.2f " % vl, end="")
-            #print(" v_R=%6.2f " % vr, end="")
+            print(" v_L=%6.2f " % vl, end="")
+            print(" v_R=%6.2f " % vr, end="")
             #print(" ratio=%8.6f " % (vl/vr),end="")
             #print(" in_acos=%8.6f " % (in_acos),end="")
             
@@ -158,8 +158,8 @@ while key!=ord('q'):
         if lidar_distanceR>2000:
             lidar_distanceR=2000
 
-        print("\r %6.2f " % lidar_distanceL ,end="")
-        print(" %6.2f " % lidar_distanceR ,end="")
+        #print("\r %6.2f " % lidar_distanceL ,end="")
+        #print(" %6.2f " % lidar_distanceR ,end="")
         tof_r = tanh(lidar_distanceL)
         tof_l = tanh(lidar_distanceR)
         #print("\r %s v_L=%6.2f v_R=%6.2f" % (mode,vl,vr),end="")
