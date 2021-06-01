@@ -133,15 +133,6 @@ while key!=ord('q'):
             # pixyカメラで物体を認識している時
             vl, vr, omega = ovm.calc(dist,theta,dt)
             
-            print("\r %6.2f " % (now-start),end="")
-            #print(" %s " % mode,end="")
-            print(" dist=%6.2f " % dist, end="")
-            print(" theta=%6.2f " % theta, end="")
-            #print(" omega=%8.4f " % omega, end="")
-            print(" v_L=%6.2f " % vl, end="")
-            print(" v_R=%6.2f " % vr, end="")
-            #print(" ratio=%8.6f " % (vl/vr),end="")
-            #print(" in_acos=%8.6f " % (in_acos),end="")
             
 
         else:
@@ -164,6 +155,17 @@ while key!=ord('q'):
         tof_r = tanh(lidar_distanceL)
         tof_l = tanh(lidar_distanceR)
         #print("\r %s v_L=%6.2f v_R=%6.2f" % (mode,vl,vr),end="")
+        print("\r %6.2f " % (now-start),end="")
+        #print(" %s " % mode,end="")
+        print(" dist=%6.2f " % dist, end="")
+        print(" theta=%6.2f " % theta, end="")
+        #print(" omega=%8.4f " % omega, end="")
+        print(" v_L=%6.2f " % vl, end="")
+        print(" v_R=%6.2f " % vr, end="")
+        print(" dL=%6.2f " % lidar_distanceL, end="")
+        print(" dR=%6.2f " % lidar_distanceR, end="")
+        #print(" ratio=%8.6f " % (vl/vr),end="")
+        #print(" in_acos=%8.6f " % (in_acos),end="")
 
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
