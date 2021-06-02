@@ -15,7 +15,8 @@ Two dimensional optimal velocity robot
 [このレポジトリのwiki](https://github.com/HondaLab/2DOVR/wiki)を参照してください．
 
 ## Requirement
-  * Raspberry Pi3
+  * [SSR2ロボット](https://github.com/HondaLab/SSR2)
+  * Raspberry Pi 3 or 4
   * Parallax High speed continuous servo (x2)
 
 
