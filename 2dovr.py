@@ -24,7 +24,7 @@ import socket
 
 
 
-select_hsv = "y"
+select_hsv = "n"
 
 SLEEP = 0.2
 EX_TIME = 3    #  (min)
@@ -111,8 +111,9 @@ if select_hsv=='y':
 else:
     #Red Cup H:S:V=3:140:129
     # h,s,v = 171,106,138
-    H = 174; S = 151; V = 172
-    h_range = 10; s_range = 80; v_range = 60 # 明度の許容範囲
+    # 177  139  141 2021/06/01
+    H = 177; S = 139; V = 141
+    h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
 start = time.time()
@@ -132,36 +133,42 @@ while key!=ord('q'):
             # pixyカメラで物体を認識している時
             vl, vr, omega = ovm.calc(dist,theta,dt)
             
-            vl = vl * MAX_SPEED
-            vr = vr * MAX_SPEED
-            print("\r %6.2f " % (now-start),end="")
-            #print(" %s " % mode,end="")
-            print(" dist=%6.2f " % dist, end="")
-            print(" theta=%6.2f " % theta, end="")
-            print(" omega=%8.4f " % omega, end="")
-            #print(" v_L=%6.2f " % vl, end="")
-            #print(" v_R=%6.2f " % vr, end="")
-            #print(" ratio=%8.6f " % (vl/vr),end="")
-            #print(" in_acos=%8.6f " % (in_acos),end="")
             
 
         else:
-            pass
-            """
-            mode = "VL53L0X"
-            #print(mode)
-            lidar_distanceL=tofL.get_distance()
-            if lidar_distanceL>2000:
-                lidar_distanceL=2000
-              
-            lidar_distanceR=tofR.get_distance()
-            if lidar_distanceR>2000:
-                lidar_distanceR=2000
+            dist = float(2000)
+            theta = 0.0
+            vl, vr, omega = ovm.calc(dist,theta,dt)
+            
+        mode = "VL53L0X"
+        #print(mode)
+        lidar_distanceL=tofL.get_distance()
+        if lidar_distanceL>2000:
+            lidar_distanceL=2000
+           
+        lidar_distanceR=tofR.get_distance()
+        if lidar_distanceR>2000:
+            lidar_distanceR=2000
 
-            vr = tanh(lidar_distanceL)
-            vl = tanh(lidar_distanceR)
-            print("\r %s v_L=%6.2f v_R=%6.2f" % (mode,vl,vr),end="")
-            """
+        #print("\r %6.2f " % lidar_distanceL ,end="")
+        #print(" %6.2f " % lidar_distanceR ,end="")
+        tof_r = tanh(lidar_distanceL)
+        tof_l = tanh(lidar_distanceR)
+        #print("\r %s v_L=%6.2f v_R=%6.2f" % (mode,vl,vr),end="")
+        print("\r %6.2f " % (now-start),end="")
+        #print(" %s " % mode,end="")
+        print(" dist=%6.2f " % dist, end="")
+        print(" theta=%6.2f " % theta, end="")
+        #print(" omega=%8.4f " % omega, end="")
+        print(" v_L=%6.2f " % vl, end="")
+        print(" v_R=%6.2f " % vr, end="")
+        print(" dL=%6.2f " % lidar_distanceL, end="")
+        print(" dR=%6.2f " % lidar_distanceR, end="")
+        #print(" ratio=%8.6f " % (vl/vr),end="")
+        #print(" in_acos=%8.6f " % (in_acos),end="")
+
+        vl = vl * tof_l * MAX_SPEED 
+        vr = vr * tof_r * MAX_SPEED
         if vl > 100:  # 左モータに対する
             vl =100   # 閾値処理
         if vl < -100: # -1 < v_l < 1
