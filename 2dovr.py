@@ -24,7 +24,7 @@ import socket
 
 
 
-select_hsv = ""
+select_hsv = "y"
 
 SLEEP = 0.2
 EX_TIME = 3    #  (min)
