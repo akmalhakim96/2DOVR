@@ -16,15 +16,15 @@ import ovm as OVM_py          # 2次元最適速度モデル関係
 import picam as PICAM_py # picamera関係
 import modules.motor5a as mt         #  (改良版)モーターを回転させるためのモジュール
 #import pixy_210416 as PIXY_py       # Pixyカメラ関係
-#import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場合
-import modules.tof2_3a as lidar      #  赤外線レーザーレーダ 2つの場合
+import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場合
+#import modules.tof2_3a as lidar      #  赤外線レーザーレーダ 2つの場合
 
 #sokcet tuusinn kannkei
 import socket
 
 
 
-select_hsv = "n"
+select_hsv = "y"
 
 SLEEP = 0.2
 EX_TIME = 3    #  (min)
@@ -56,9 +56,29 @@ def Parameter_read(file_path):
             tmp.append(float(row[4]))
             tmp.append(float(row[5]))
     return tmp
+    
 #  物体未認識時のhyperbolic-tan
+def tanh1(x):
+    alpha=30.0
+    alpha2=30.0
+    beta=0.004 # 0.004
+    beta2=10.00
+    b=160  # 280
+    c=0.0
+    f=math.tanh(beta*(x-b)) + math.tanh(beta2*(x-b))+c
+    return f
+
+def tanh2(x):
+    alpha=30.0
+    alpha2=30.0
+    beta=0.004 # 0.004
+    beta2=10.00
+    b=160  # 360
+    c=0.0
+    f=math.tanh(beta*(x-b)) + math.tanh(beta2*(x-b))+c
+    return f
+"""
 def tanh(x):
-    """
     alpha=30.0
     alpha2=30.0
     beta=0.004 #  0.004
@@ -66,13 +86,12 @@ def tanh(x):
     b=160  #  280
     c=0
     f=alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c
-    """
     delta = 0.1 #  beta
     p = 250     #  b
     q = 0.0     #  c
     f = (math.tanh(delta * (x - p) ) + q )
     return f
-
+"""
 #  各変数定義
 parm = []
 
@@ -82,8 +101,8 @@ parm = Parameter_read(file_pointer)
 
 #  インスタンス生成
 ovm = OVM_py.Optimal_Velocity_class(parm)         #  2次元最適速度モデル関係
-#tofR,tofL,tofC=lidar.start() #  赤外線レーザ(3)
-tofL,tofR=lidar.start()       #  赤外線レーザ(2)
+tofR,tofL,tofC=lidar.start() #  赤外線レーザ(3)
+#tofL,tofR=lidar.start()       #  赤外線レーザ(2)
 print("VL53L0X 接続完了\n")
 time.sleep(2)
 picam =PICAM_py.PI_CAMERA_CLASS() 
@@ -104,6 +123,7 @@ print()
 """
 count = 0
 data = []
+gamma=0.33 # Center weight
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
 
 if select_hsv=='y':
@@ -141,31 +161,38 @@ while key!=ord('q'):
             vl, vr, omega = ovm.calc(dist,theta,dt)
             
         mode = "VL53L0X"
-        #print(mode)
         lidar_distanceL=tofL.get_distance()
         if lidar_distanceL>2000:
             lidar_distanceL=2000
+
+        lidar_distanceC=tofC.get_distance()
+        if lidar_distanceC>2000:
+            lidar_distanceC=2000
            
         lidar_distanceR=tofR.get_distance()
         if lidar_distanceR>2000:
             lidar_distanceR=2000
 
-        #print("\r %6.2f " % lidar_distanceL ,end="")
-        #print(" %6.2f " % lidar_distanceR ,end="")
-        tof_r = tanh(lidar_distanceL)
-        tof_l = tanh(lidar_distanceR)
-        #print("\r %s v_L=%6.2f v_R=%6.2f" % (mode,vl,vr),end="")
+        if lidar_distanceL>0 and lidar_distanceC>0:
+            areaL=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceL))
+        if lidar_distanceR>0 and lidar_distanceC>0:
+            areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
+
+
+        tof_r = tanh1(areaL) / 2
+        tof_l = tanh2(areaR) / 2
+        """
+        print("\r tof_l : %6.2f , " % tof_l , end="")
+        print(" tof_r : %6.2f" % tof_r , end="")
+        """
         print("\r %6.2f " % (now-start),end="")
-        #print(" %s " % mode,end="")
         print(" dist=%6.2f " % dist, end="")
         print(" theta=%6.2f " % theta, end="")
-        #print(" omega=%8.4f " % omega, end="")
         print(" v_L=%6.2f " % vl, end="")
         print(" v_R=%6.2f " % vr, end="")
         print(" dL=%6.2f " % lidar_distanceL, end="")
+        print(" dC=%6.2f " % lidar_distanceC, end="")
         print(" dR=%6.2f " % lidar_distanceR, end="")
-        #print(" ratio=%8.6f " % (vl/vr),end="")
-        #print(" in_acos=%8.6f " % (in_acos),end="")
 
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
