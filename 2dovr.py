@@ -10,6 +10,9 @@ import time
 import math
 import sys
 import cv2
+import datetime
+import platform
+
 import numpy as np
 #  Pythonファイルインポート 
 import ovm as OVM_py          # 2次元最適速度モデル関係
@@ -19,7 +22,7 @@ import modules.motor5a as mt         #  (改良版)モーターを回転させ�
 import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場合
 #import modules.tof2_3a as lidar      #  赤外線レーザーレーダ 2つの場合
 
-#sokcet tuusinn kannkei
+#sokcet 通信関係 
 import socket
 
 
@@ -59,6 +62,10 @@ def Parameter_read(file_path):
             tmp.append(float(row[5]))
     return tmp
     
+# q_s計算用にデータ保存する関数
+def save_data(write_fp, data_array):
+    write_fp.write(data_array)
+
 #  物体未認識時のhyperbolic-tan
 def tanh1(x):
     alpha=30.0
@@ -96,6 +103,20 @@ def tanh(x):
 """
 #  各変数定義
 parm = []
+
+ex_start_time = datetime.datetime.now()
+ex_start_time = str(ex_start_time.strftime('%Y年%m月%d日%H:%H:%S'))
+ex_start_time = ex_start_time.replace("'",'')
+ex_start_time = ex_start_time.replace(" ",'')
+
+hostname = '[%s]' % platform.uname()[1]
+hostname = hostname.replace("[",'')
+hostname = hostname.replace("]",'')
+
+write_file = str(hostname) + "-" +str(ex_start_time) + ".csv"
+
+write_fp = open("./result/"+write_file,"w")
+write_fp.write("#"+hostname+"\n")
 
 #  パラメータ読み込み
 file_pointer = open(FILE,'r')
@@ -191,6 +212,10 @@ while key!=ord('q'):
         print(" dL=%6.2f " % lidar_distanceL, end="")
         print(" dC=%6.2f " % lidar_distanceC, end="")
         print(" dR=%6.2f " % lidar_distanceR, end="")
+        write_fp.write(str(now-start)+", ")
+        write_fp.write(str(theta) + ", ")
+        write_fp.write("\n")
+        
 
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
@@ -216,10 +241,12 @@ while key!=ord('q'):
     except KeyboardInterrupt:
         mR.stop()
         mL.stop()
+        write_fp.close()
         print("Ctrl + C button pressed")
         sys.exit("\nsystem exit ! \n")
 mR.stop()
 mL.stop()
+write_fp.close()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
 print()
 print("===============================")

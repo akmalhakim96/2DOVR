@@ -107,27 +107,28 @@ if __name__=="__main__":
    init=now
    rate=0
    print("Input 'q' to stop this program")
+   print(" Time  |  left  |  center  |  right")
    key='c'
    while key!='q':
       try:
-         distance1 = tof1.get_distance()
+         left = tof1.get_distance()
          time.sleep(0.02)
-         distance2 = tof2.get_distance()
+         right = tof2.get_distance()
          time.sleep(0.02)
-         distance3 = tof3.get_distance()
+         center = tof3.get_distance()
          now = time.time()
          rate+=1
-         print (" %6.2f %d %d %d mm" % (now-start, distance1, distance2 , distance3) )
+         print ("\r %4.2f     %d      %d       %d mm" % (now-start, left, center , right), end="" )
          #time.sleep(timing/1000000.00)
-         #time.sleep(0.01)
+         time.sleep(0.01)
 
-       
+         """
          if now-init>period: 
             rate=rate/period
             print ("\r time=%6.2f %4d %4d %4d mm rate=%3d" % (now-start, distance1, distance2,distance3,rate), end=' ')
             rate=0
             init=now
-        
+         """
       except :
          pass
 
