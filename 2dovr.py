@@ -24,7 +24,9 @@ import socket
 
 
 
-select_hsv = "y"
+select_hsv = "n"
+motor_run = "n"
+imshow = "n"
 
 SLEEP = 0.2
 EX_TIME = 3    #  (min)
@@ -63,7 +65,7 @@ def tanh1(x):
     alpha2=30.0
     beta=0.004 # 0.004
     beta2=10.00
-    b=160  # 280
+    b=360  # 280
     c=0.0
     f=math.tanh(beta*(x-b)) + math.tanh(beta2*(x-b))+c
     return f
@@ -181,15 +183,11 @@ while key!=ord('q'):
 
         tof_r = tanh1(areaL) / 2
         tof_l = tanh2(areaR) / 2
-        """
-        print("\r tof_l : %6.2f , " % tof_l , end="")
-        print(" tof_r : %6.2f" % tof_r , end="")
-        """
         print("\r %6.2f " % (now-start),end="")
         print(" dist=%6.2f " % dist, end="")
         print(" theta=%6.2f " % theta, end="")
-        print(" v_L=%6.2f " % vl, end="")
-        print(" v_R=%6.2f " % vr, end="")
+        #print(" v_L=%6.2f " % vl, end="")
+        #print(" v_R=%6.2f " % vr, end="")
         print(" dL=%6.2f " % lidar_distanceL, end="")
         print(" dC=%6.2f " % lidar_distanceC, end="")
         print(" dR=%6.2f " % lidar_distanceR, end="")
@@ -205,11 +203,12 @@ while key!=ord('q'):
             vr =100   # 閾値処理
         if vr < -100: # -1 < v_r < 1
             vr = -100 #
-
-        mL.run(vl)
-        mR.run(vr)
-        cv2.imshow("frame",frame)
-        key=cv2.waitKey(1)
+        if motor_run == 'y':
+            mL.run(vl)
+            mR.run(vr)
+        if imshow == 'y':    
+            cv2.imshow("frame",frame)
+            key=cv2.waitKey(1)
         time.sleep(DT)
         last = now
         now = time.time()

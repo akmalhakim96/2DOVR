@@ -117,7 +117,7 @@ if __name__=="__main__":
          distance3 = tof3.get_distance()
          now = time.time()
          rate+=1
-         #print (" %6.2f %d %d mm" % (now-start, distance, distance1) )
+         print (" %6.2f %d %d %d mm" % (now-start, distance1, distance2 , distance3) )
          #time.sleep(timing/1000000.00)
          #time.sleep(0.01)
 
