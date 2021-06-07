@@ -103,7 +103,7 @@ parm = Parameter_read(file_pointer)
 
 #  インスタンス生成
 ovm = OVM_py.Optimal_Velocity_class(parm)         #  2次元最適速度モデル関係
-tofR,tofL,tofC=lidar.start() #  赤外線レーザ(3)
+tofL,tofR,tofC=lidar.start() #  赤外線レーザ(3)
 #tofL,tofR=lidar.start()       #  赤外線レーザ(2)
 print("VL53L0X 接続完了\n")
 time.sleep(2)
