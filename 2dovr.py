@@ -75,7 +75,7 @@ def tanh2(x):
     alpha2=30.0
     beta=0.004 # 0.004
     beta2=10.00
-    b=160  # 360
+    b=360  # 360
     c=0.0
     f=math.tanh(beta*(x-b)) + math.tanh(beta2*(x-b))+c
     return f
