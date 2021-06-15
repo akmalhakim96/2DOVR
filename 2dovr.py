@@ -27,7 +27,7 @@ import socket
 
 
 
-select_hsv = "y"
+select_hsv = "n"
 motor_run = "y"
 imshow = "y"
 
@@ -152,9 +152,10 @@ if select_hsv=='y':
 else:
     #Red Cup H:S:V=3:140:129
     # h,s,v = 171,106,138
-    # 177  139  141 2021/06/01
+    # 177  139  141 2021/06/01 denki off 
+    # 172  160  148 2021/06/15 denki on
 
-    H = 171; S = 132; V =157 
+    H = 172; S = 160; V =148 
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
