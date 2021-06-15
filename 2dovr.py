@@ -67,7 +67,7 @@ def Parameter_read(file_path):
 def tanh1(x):
     alpha=1.0
     alpha2=1.0
-    beta=0.004 # 0.004
+    beta=1.0 # 0.004
     beta2=10.00
     b=0.6  # 280
     c=0.0
@@ -77,7 +77,7 @@ def tanh1(x):
 def tanh2(x):
     alpha=1.0
     alpha2=1.0
-    beta=0.004 # 0.004
+    beta=1.0 # 0.004
     beta2=10.00
     b=0.4  # 360
     c=0.0
