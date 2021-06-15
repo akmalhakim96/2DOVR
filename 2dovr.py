@@ -28,8 +28,8 @@ import socket
 
 
 select_hsv = "n"
-motor_run = "n"
-imshow = "n"
+motor_run = "y"
+imshow = "y"
 
 SLEEP = 0.2
 EX_TIME = 3    #  (min)
@@ -37,12 +37,12 @@ BUS = 1         # bus number
 I2C_ADDR = 0x54 #I2Cアドレス
 GPIO_L = 17     #  左モーターのgpio 17番
 GPIO_R = 18     #  右モーターのgpio 18番
-MAX_SPEED = 50  # パーセント
+MAX_SPEED = 75  # パーセント
 DT = 0.1
 dt = DT
 
 #  パラメータ記載のファイルの絶対パス
-FILE = "parm.csv" 
+FILE = "/home/pi/2DOVR/parm.csv" 
 
 
 #  実験パラメータ読み込み
@@ -61,10 +61,7 @@ def Parameter_read(file_path):
             tmp.append(float(row[4]))
             tmp.append(float(row[5]))
     return tmp
-    
-# q_s計算用にデータ保存する関数
-def save_data(write_fp, data_array):
-    write_fp.write(data_array)
+
 
 #  物体未認識時のhyperbolic-tan
 def tanh1(x):
@@ -72,7 +69,7 @@ def tanh1(x):
     alpha2=30.0
     beta=0.004 # 0.004
     beta2=10.00
-    b=160  # 280
+    b=0.6  # 280
     c=0.0
     f=math.tanh(beta*(x-b)) + math.tanh(beta2*(x-b))+c
     return f
@@ -82,7 +79,7 @@ def tanh2(x):
     alpha2=30.0
     beta=0.004 # 0.004
     beta2=10.00
-    b=360  # 360
+    b=0.4  # 360
     c=0.0
     f=math.tanh(beta*(x-b)) + math.tanh(beta2*(x-b))+c
     return f
@@ -105,7 +102,7 @@ def tanh(x):
 parm = []
 
 ex_start_time = datetime.datetime.now()
-ex_start_time = str(ex_start_time.strftime('%Y年%m月%d日%H:%H:%S'))
+ex_start_time = str(ex_start_time.strftime('%Y%m%d%H%M%S'))
 ex_start_time = ex_start_time.replace("'",'')
 ex_start_time = ex_start_time.replace(" ",'')
 
@@ -113,9 +110,10 @@ hostname = '[%s]' % platform.uname()[1]
 hostname = hostname.replace("[",'')
 hostname = hostname.replace("]",'')
 
-write_file = str(hostname) + "-" +str(ex_start_time) + ".csv"
+write_file = str(hostname) + "-" +str(ex_start_time) + ".txt"
+print(write_file)
 
-write_fp = open("./result/"+write_file,"w")
+write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
 write_fp.write("#"+hostname+"\n")
 
 #  パラメータ読み込み
@@ -146,7 +144,7 @@ print()
 """
 count = 0
 data = []
-gamma=0.33 # Center weight
+gamma=0.50 # Center weight
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
 
 if select_hsv=='y':
@@ -155,7 +153,8 @@ else:
     #Red Cup H:S:V=3:140:129
     # h,s,v = 171,106,138
     # 177  139  141 2021/06/01
-    H = 177; S = 139; V = 141
+
+    H = 175; S = 135; V =115 
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
@@ -184,17 +183,17 @@ while key!=ord('q'):
             vl, vr, omega = ovm.calc(dist,theta,dt)
             
         mode = "VL53L0X"
-        lidar_distanceL=tofL.get_distance()
-        if lidar_distanceL>2000:
-            lidar_distanceL=2000
+        lidar_distanceL=tofL.get_distance()/1000
+        if lidar_distanceL>2:
+            lidar_distanceL=2
 
-        lidar_distanceC=tofC.get_distance()
-        if lidar_distanceC>2000:
-            lidar_distanceC=2000
+        lidar_distanceC=tofC.get_distance()/1000
+        if lidar_distanceC>2:
+            lidar_distanceC=2
            
-        lidar_distanceR=tofR.get_distance()
-        if lidar_distanceR>2000:
-            lidar_distanceR=2000
+        lidar_distanceR=tofR.get_distance()/1000
+        if lidar_distanceR>2:
+            lidar_distanceR=2
 
         if lidar_distanceL>0 and lidar_distanceC>0:
             areaL=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceL))
@@ -205,14 +204,14 @@ while key!=ord('q'):
         tof_r = tanh1(areaL) / 2
         tof_l = tanh2(areaR) / 2
         print("\r %6.2f " % (now-start),end="")
-        print(" dist=%6.2f " % dist, end="")
-        print(" theta=%6.2f " % theta, end="")
-        #print(" v_L=%6.2f " % vl, end="")
-        #print(" v_R=%6.2f " % vr, end="")
+        #print(" dist=%6.2f " % dist, end="")
+        #print(" theta=%6.2f " % theta, end="")
+        print(" v_L=%6.2f " % vl, end="")
+        print(" v_R=%6.2f " % vr, end="")
         print(" dL=%6.2f " % lidar_distanceL, end="")
         print(" dC=%6.2f " % lidar_distanceC, end="")
         print(" dR=%6.2f " % lidar_distanceR, end="")
-        write_fp.write(str(now-start)+", ")
+        write_fp.write(str('{:.2g}'.format(now-start))+", ")
         write_fp.write(str(theta) + ", ")
         write_fp.write("\n")
         
@@ -242,7 +241,7 @@ while key!=ord('q'):
         mR.stop()
         mL.stop()
         write_fp.close()
-        print("Ctrl + C button pressed")
+        #print("Ctrl + C button pressed")
         sys.exit("\nsystem exit ! \n")
 mR.stop()
 mL.stop()
