@@ -65,7 +65,7 @@ def Parameter_read(file_path):
 
 #  物体未認識時のhyperbolic-tan
 def tanh1(x):
-    alpha=1.0
+    alpha=0.0
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
@@ -75,7 +75,7 @@ def tanh1(x):
     return f
 
 def tanh2(x):
-    alpha=1.0
+    alpha=0.0
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
