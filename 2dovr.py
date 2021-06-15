@@ -27,7 +27,7 @@ import socket
 
 
 
-select_hsv = "n"
+select_hsv = "y"
 motor_run = "y"
 imshow = "y"
 
@@ -37,7 +37,7 @@ BUS = 1         # bus number
 I2C_ADDR = 0x54 #I2Cアドレス
 GPIO_L = 17     #  左モーターのgpio 17番
 GPIO_R = 18     #  右モーターのgpio 18番
-MAX_SPEED = 75  # パーセント
+MAX_SPEED = 62  # パーセント
 DT = 0.1
 dt = DT
 
@@ -65,23 +65,23 @@ def Parameter_read(file_path):
 
 #  物体未認識時のhyperbolic-tan
 def tanh1(x):
-    alpha=30.0
-    alpha2=30.0
+    alpha=1.0
+    alpha2=1.0
     beta=0.004 # 0.004
     beta2=10.00
     b=0.6  # 280
     c=0.0
-    f=math.tanh(beta*(x-b)) + math.tanh(beta2*(x-b))+c
+    f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
 
 def tanh2(x):
-    alpha=30.0
-    alpha2=30.0
+    alpha=1.0
+    alpha2=1.0
     beta=0.004 # 0.004
     beta2=10.00
     b=0.4  # 360
     c=0.0
-    f=math.tanh(beta*(x-b)) + math.tanh(beta2*(x-b))+c
+    f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
 """
 def tanh(x):
@@ -154,7 +154,7 @@ else:
     # h,s,v = 171,106,138
     # 177  139  141 2021/06/01
 
-    H = 175; S = 135; V =115 
+    H = 171; S = 132; V =157 
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
@@ -201,8 +201,8 @@ while key!=ord('q'):
             areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
 
 
-        tof_r = tanh1(areaL) / 2
-        tof_l = tanh2(areaR) / 2
+        tof_r = tanh1(areaL)
+        tof_l = tanh2(areaR)
         print("\r %6.2f " % (now-start),end="")
         #print(" dist=%6.2f " % dist, end="")
         #print(" theta=%6.2f " % theta, end="")
