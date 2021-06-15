@@ -69,7 +69,7 @@ def tanh1(x):
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
-    b=0.5  # 280
+    b=0.4  # 280
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
@@ -79,7 +79,7 @@ def tanh2(x):
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
-    b=0.3  # 360
+    b=0.6  # 360
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
