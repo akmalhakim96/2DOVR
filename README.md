@@ -19,6 +19,7 @@ Two dimensional optimal velocity robot
   * [SSR2ロボット](https://github.com/HondaLab/SSR2)
   * Raspberry Pi 3 or 4
   * Parallax High speed continuous servo (x2)
+  * 5V 3A バッテリー（18650 x2 + DC-DCコンバータ あるいはモバイルバッテリー)
 
 
 ## History
