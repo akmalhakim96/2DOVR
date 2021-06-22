@@ -27,7 +27,7 @@ import socket
 
 
 
-select_hsv = "y"
+select_hsv = "n"
 motor_run = "y"
 imshow = "y"
 
@@ -155,8 +155,9 @@ else:
     # 177  139  141 2021/06/01  電気OFF
     # 172  160  148 2021/06/15  電気ON
     # 179  116  101 2021/06/15  電気ON
+    # 172  164  152 2021/06/22  電気ON
 
-    H = 179; S = 116; V =101 
+    H = 172; S = 164; V =152 
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
