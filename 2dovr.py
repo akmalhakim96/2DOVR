@@ -172,19 +172,6 @@ while key!=ord('q'):
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
     count = count + 1
     try :
-        if dist == None:
-            dist = float(2000)
-            theta = 0.0
-            vl, vr, omega = ovm.calc(dist,theta,dt)
-        else:
-            mode = "picam"
-            dist = float(dist)
-            if dist > 0.3:
-                # pixyカメラで物体を認識している時
-                vl, vr, omega = ovm.calc(dist,theta,dt)
-            else:
-                vl=1.0
-                vr=1.0
             
             
         lidar_distanceL=tofL.get_distance()/1000
@@ -218,6 +205,20 @@ while key!=ord('q'):
         write_fp.write(str('{:.2g}'.format(now-start))+", ")
         write_fp.write(str(theta) + ", ")
         write_fp.write("\n")
+
+        if areaL > 0.3 and areaR > 0.3:
+            if dist == None:
+                dist = float(2000)
+                theta = 0.0
+                vl, vr, omega = ovm.calc(dist,theta,dt)
+            else:
+                mode = "picam"
+                dist = float(dist)
+                # pixyカメラで物体を認識している時
+                vl, vr, omega = ovm.calc(dist,theta,dt)
+        else:
+            vl = 1.0
+            vr = 1.0
         
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
