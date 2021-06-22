@@ -27,7 +27,7 @@ import socket
 
 
 
-select_hsv = "n"
+select_hsv = "y"
 motor_run = "y"
 imshow = "y"
 
