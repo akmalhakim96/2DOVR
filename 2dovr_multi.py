@@ -27,7 +27,7 @@ import socket
 
 
 
-select_hsv = "y"
+select_hsv = "n"
 motor_run = "y"
 imshow = "y"
 
@@ -69,7 +69,7 @@ def tanh1(x):
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
-    b=0.3  # 280
+    b=0.2  # 280
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
@@ -79,7 +79,7 @@ def tanh2(x):
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
-    b=0.4  # 360
+    b=0.3  # 360
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
@@ -172,8 +172,20 @@ while key!=ord('q'):
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
     count = count + 1
     try :
+        if dist != None:
+            mode = "picam"
+            dist = float(dist)
+            # pixyカメラで物体を認識している時
+            vl, vr, omega = ovm.calc(dist,theta,dt)
             
             
+
+        else:
+            dist = float(2000)
+            theta = 0.0
+            vl, vr, omega = ovm.calc(dist,theta,dt)
+            
+        mode = "VL53L0X"
         lidar_distanceL=tofL.get_distance()/1000
         if lidar_distanceL>2:
             lidar_distanceL=2
@@ -205,24 +217,10 @@ while key!=ord('q'):
         write_fp.write(str('{:.2g}'.format(now-start))+", ")
         write_fp.write(str(theta) + ", ")
         write_fp.write("\n")
-
-        if areaL > 0.3 and areaR > 0.3:
-            if dist == None:
-                dist = float(2000)
-                theta = 0.0
-                vl, vr, omega = ovm.calc(dist,theta,dt)
-            else:
-                mode = "picam"
-                dist = float(dist)
-                # pixyカメラで物体を認識している時
-                vl, vr, omega = ovm.calc(dist,theta,dt)
-        else:
-            vl = 1.0
-            vr = 1.0
         
+
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
-
         if vl > 100:  # 左モータに対する
             vl =100   # 閾値処理
         if vl < -100: # -1 < v_l < 1
