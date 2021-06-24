@@ -41,6 +41,8 @@ MAX_SPEED = 62  # パーセント
 DT = 0.1
 dt = DT
 
+dbl = 0.4
+
 #  パラメータ記載のファイルの絶対パス
 FILE = "/home/pi/2DOVR/parm.csv" 
 
@@ -206,7 +208,7 @@ while key!=ord('q'):
         #write_fp.write(str(theta) + ", ")
         #write_fp.write("\n")
 
-        if areaL > 0.3 and areaR > 0.3:
+        if areaL > dbl and areaR > dbl:
             if dist == None:
                 dist = float(2000)
                 theta = 0.0
