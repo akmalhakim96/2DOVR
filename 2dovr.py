@@ -27,7 +27,7 @@ import socket
 
 
 
-select_hsv = "y"
+select_hsv = "n"
 motor_run = "y"
 imshow = "y"
 
@@ -69,7 +69,7 @@ def tanh1(x):
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
-    b=0.3  # 280
+    b=0.4  # 280
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
@@ -79,7 +79,7 @@ def tanh2(x):
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
-    b=0.4  # 360
+    b=0.6  # 360
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
@@ -144,7 +144,7 @@ print()
 """
 count = 0
 data = []
-gamma=0.50 # Center weight
+gamma=0.33 # Center weight
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
 
 if select_hsv=='y':
@@ -156,8 +156,9 @@ else:
     # 172  160  148 2021/06/15  電気ON
     # 179  116  101 2021/06/15  電気ON
     # 172  164  152 2021/06/22  電気ON
+    # 175  153  152 2021/06/24  電気ON
 
-    H = 172; S = 164; V =152 
+    H = 175; S = 153; V =152 
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
@@ -172,7 +173,6 @@ while key!=ord('q'):
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
     count = count + 1
     try :
-            
             
         lidar_distanceL=tofL.get_distance()/1000
         if lidar_distanceL>2:
@@ -202,9 +202,9 @@ while key!=ord('q'):
         print(" dL=%6.2f " % lidar_distanceL, end="")
         print(" dC=%6.2f " % lidar_distanceC, end="")
         print(" dR=%6.2f " % lidar_distanceR, end="")
-        write_fp.write(str('{:.2g}'.format(now-start))+", ")
-        write_fp.write(str(theta) + ", ")
-        write_fp.write("\n")
+        #write_fp.write(str('{:.2g}'.format(now-start))+", ")
+        #write_fp.write(str(theta) + ", ")
+        #write_fp.write("\n")
 
         if areaL > 0.3 and areaR > 0.3:
             if dist == None:
@@ -223,15 +223,6 @@ while key!=ord('q'):
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
 
-        if vl > 100:  # 左モータに対する
-            vl =100   # 閾値処理
-        if vl < -100: # -1 < v_l < 1
-            vl = -100 #
-        
-        if vr > 100:  # 右モータに対する
-            vr =100   # 閾値処理
-        if vr < -100: # -1 < v_r < 1
-            vr = -100 #
         if motor_run == 'y':
             mL.run(vl)
             mR.run(vr)
@@ -252,6 +243,7 @@ mR.stop()
 mL.stop()
 write_fp.close()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
+"""
 print()
 print("===============================")
 print("=  実験時間 {:.1f} (sec)".format(now-start))
@@ -259,6 +251,7 @@ print("=  q_s--->")
 print("===============================")
 print()
 print("おつかれさまでした  ^-^/")
+"""
 
 #print("測定回数--->",count)
 #print("測定レート {:.3f} (回数/sec)".format(count/15))
