@@ -41,7 +41,7 @@ MAX_SPEED = 62  # パーセント
 DT = 0.1
 dt = DT
 
-dbl = 0.4
+dbl = 0.5
 
 #  パラメータ記載のファイルの絶対パス
 FILE = "/home/pi/2DOVR/parm.csv" 
@@ -243,7 +243,7 @@ while key!=ord('q'):
         sys.exit("\nsystem exit ! \n")
 mR.stop()
 mL.stop()
-write_fp.close()
+#write_fp.close()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
 """
 print()
