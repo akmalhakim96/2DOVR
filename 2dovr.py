@@ -115,8 +115,8 @@ hostname = hostname.replace("]",'')
 write_file = str(hostname) + "-" +str(ex_start_time) + ".txt"
 print(write_file)
 
-write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
-write_fp.write("#"+hostname+"\n")
+#write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
+#write_fp.write("#"+hostname+"\n")
 
 #  パラメータ読み込み
 file_pointer = open(FILE,'r')
