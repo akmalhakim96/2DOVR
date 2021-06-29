@@ -41,7 +41,7 @@ MAX_SPEED = 62  # パーセント
 DT = 0.1
 dt = DT
 
-dbl = 0.5
+dbl = 0.2
 
 #  パラメータ記載のファイルの絶対パス
 FILE = "/home/pi/2DOVR/parm.csv" 
