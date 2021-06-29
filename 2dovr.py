@@ -25,8 +25,6 @@ import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場
 #sokcet 通信関係 
 import socket
 
-
-
 select_hsv = "y"
 motor_run = "y"
 imshow = "y"
@@ -41,7 +39,7 @@ MAX_SPEED = 62  # パーセント
 DT = 0.1
 dt = DT
 
-dbl = 0.2
+dbl = 0.3
 
 #  パラメータ記載のファイルの絶対パス
 FILE = "/home/pi/2DOVR/parm.csv" 
@@ -175,7 +173,6 @@ while key!=ord('q'):
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
     count = count + 1
     try :
-            
         lidar_distanceL=tofL.get_distance()/1000
         if lidar_distanceL>2:
             lidar_distanceL=2
@@ -192,7 +189,6 @@ while key!=ord('q'):
             areaL=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceL))
         if lidar_distanceR>0 and lidar_distanceC>0:
             areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
-
 
         tof_r = tanh1(areaL)
         tof_l = tanh2(areaR)
