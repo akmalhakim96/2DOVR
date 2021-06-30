@@ -41,7 +41,7 @@ dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
 
 #  パラメータ記載のファイルの絶対パス
-FILE = "/home/pi/2DOVR/parm.csv" 
+FILE = "/home/pi/2DOVR/parm_ovm.csv" 
 
 
 #  実験パラメータ読み込み
