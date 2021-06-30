@@ -41,10 +41,10 @@ class Rmotor(Motor):
        
 if __name__=='__main__':
    # Motor output
-   OUTPUT=-20.00
+   OUTPUT=61.0
 
    # Length of time
-   Time_Length= 30.0
+   Time_Length= 5.0
 
    # 停止の仕方のメッセージ表示
    print("Robot runs only %5.2f sec." % Time_Length)

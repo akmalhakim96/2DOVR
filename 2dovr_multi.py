@@ -25,7 +25,9 @@ import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場
 #sokcet 通信関係 
 import socket
 
-select_hsv = "y"
+
+
+select_hsv = "n"
 motor_run = "y"
 imshow = "y"
 
@@ -38,8 +40,6 @@ GPIO_R = 18     #  右モーターのgpio 18番
 MAX_SPEED = 62  # パーセント
 DT = 0.1
 dt = DT
-
-dbl = 0.3
 
 #  パラメータ記載のファイルの絶対パス
 FILE = "/home/pi/2DOVR/parm.csv" 
@@ -69,7 +69,7 @@ def tanh1(x):
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
-    b=0.4  # 280
+    b=0.2  # 280
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
@@ -79,7 +79,7 @@ def tanh2(x):
     alpha2=1.0
     beta=0.4 # 0.004
     beta2=1000.00
-    b=0.6  # 360
+    b=0.3  # 360
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
@@ -113,8 +113,8 @@ hostname = hostname.replace("]",'')
 write_file = str(hostname) + "-" +str(ex_start_time) + ".txt"
 print(write_file)
 
-#write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
-#write_fp.write("#"+hostname+"\n")
+write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
+write_fp.write("#"+hostname+"\n")
 
 #  パラメータ読み込み
 file_pointer = open(FILE,'r')
@@ -144,7 +144,7 @@ print()
 """
 count = 0
 data = []
-gamma=0.33 # Center weight
+gamma=0.50 # Center weight
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
 
 if select_hsv=='y':
@@ -156,9 +156,8 @@ else:
     # 172  160  148 2021/06/15  電気ON
     # 179  116  101 2021/06/15  電気ON
     # 172  164  152 2021/06/22  電気ON
-    # 175  153  152 2021/06/24  電気ON
 
-    H = 175; S = 153; V =152 
+    H = 172; S = 164; V =152 
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
@@ -173,6 +172,20 @@ while key!=ord('q'):
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
     count = count + 1
     try :
+        if dist != None:
+            mode = "picam"
+            dist = float(dist)
+            # pixyカメラで物体を認識している時
+            vl, vr, omega = ovm.calc(dist,theta,dt)
+            
+            
+
+        else:
+            dist = float(2000)
+            theta = 0.0
+            vl, vr, omega = ovm.calc(dist,theta,dt)
+            
+        mode = "VL53L0X"
         lidar_distanceL=tofL.get_distance()/1000
         if lidar_distanceL>2:
             lidar_distanceL=2
@@ -190,6 +203,7 @@ while key!=ord('q'):
         if lidar_distanceR>0 and lidar_distanceC>0:
             areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
 
+
         tof_r = tanh1(areaL)
         tof_l = tanh2(areaR)
         print("\r %6.2f " % (now-start),end="")
@@ -200,27 +214,22 @@ while key!=ord('q'):
         print(" dL=%6.2f " % lidar_distanceL, end="")
         print(" dC=%6.2f " % lidar_distanceC, end="")
         print(" dR=%6.2f " % lidar_distanceR, end="")
-        #write_fp.write(str('{:.2g}'.format(now-start))+", ")
-        #write_fp.write(str(theta) + ", ")
-        #write_fp.write("\n")
-
-        if areaL > dbl and areaR > dbl:
-            if dist == None:
-                dist = float(2000)
-                theta = 0.0
-                vl, vr, omega = ovm.calc(dist,theta,dt)
-            else:
-                mode = "picam"
-                dist = float(dist)
-                # pixyカメラで物体を認識している時
-                vl, vr, omega = ovm.calc(dist,theta,dt)
-        else:
-            vl = 1.0
-            vr = 1.0
+        write_fp.write(str('{:.2g}'.format(now-start))+", ")
+        write_fp.write(str(theta) + ", ")
+        write_fp.write("\n")
         
+
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
-
+        if vl > 100:  # 左モータに対する
+            vl =100   # 閾値処理
+        if vl < -100: # -1 < v_l < 1
+            vl = -100 #
+        
+        if vr > 100:  # 右モータに対する
+            vr =100   # 閾値処理
+        if vr < -100: # -1 < v_r < 1
+            vr = -100 #
         if motor_run == 'y':
             mL.run(vl)
             mR.run(vr)
@@ -239,9 +248,8 @@ while key!=ord('q'):
         sys.exit("\nsystem exit ! \n")
 mR.stop()
 mL.stop()
-#write_fp.close()
+write_fp.close()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
-"""
 print()
 print("===============================")
 print("=  実験時間 {:.1f} (sec)".format(now-start))
@@ -249,7 +257,6 @@ print("=  q_s--->")
 print("===============================")
 print()
 print("おつかれさまでした  ^-^/")
-"""
 
 #print("測定回数--->",count)
 #print("測定レート {:.3f} (回数/sec)".format(count/15))
