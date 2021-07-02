@@ -42,11 +42,6 @@ def acos(x):
 def tanh(x):
     return math.tanh(x)
 
-# 外積計算
-def outer_product(a1,a2,b1,b2):
-    outer_z = (a1*b2 - a2*b1) #OK
-    return outer_z
-
 # シグナム関数(符号関数)
 def sgn(x):
     if x > 0:

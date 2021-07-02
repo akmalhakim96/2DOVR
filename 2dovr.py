@@ -30,19 +30,18 @@ motor_run = "y"
 imshow = "y"
 
 SLEEP = 0.2
-EX_TIME = 3    #  (min)
+EX_TIME = 3     # (min)
 BUS = 1         # bus number
-I2C_ADDR = 0x54 #I2Cアドレス
-GPIO_L = 17     #  左モーターのgpio 17番
-GPIO_R = 18     #  右モーターのgpio 18番
+I2C_ADDR = 0x54 # I2Cアドレス
+GPIO_L = 17     # 左モーターのgpio 17番
+GPIO_R = 18     # 右モーターのgpio 18番
 MAX_SPEED = 62  # パーセント
 DT = 0.1
 dt = DT
-
-dbl = 0.3
+THRESHOLD = 0.3 # OVMをon/offするための閾値
 
 #  パラメータ記載のファイルの絶対パス
-FILE = "/home/pi/2DOVR/parm.csv" 
+FILE = "/home/pi/2DOVR/parm_ovm.csv" 
 
 
 #  実験パラメータ読み込み
@@ -204,7 +203,7 @@ while key!=ord('q'):
         #write_fp.write(str(theta) + ", ")
         #write_fp.write("\n")
 
-        if areaL > dbl and areaR > dbl:
+        if areaL > THRESHOLD and areaR > THRESHOLD:
             if dist == None:
                 dist = float(2000)
                 theta = 0.0
