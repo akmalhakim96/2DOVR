@@ -26,7 +26,7 @@ import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場
 import socket
 
 select_hsv = "n"
-motor_run = "y"
+motor_run = "n"
 imshow = "y"
 
 SLEEP = 0.2
@@ -65,22 +65,22 @@ def Parameter_read(file_path):
 
 #  物体未認識時のhyperbolic-tan
 def tanh1(x,list):
-    alpha=list[0]
-    alpha2=list[1]
-    beta=list[2] # 0.004
-    beta2=list[3]
-    b=list[4]  # 280
-    c=list[6]
+    alpha=float(list[0])  # 0.0
+    alpha2=float(list[1]) # 1.0
+    beta=float(list[2])   # 0.004
+    beta2=float(list[3])  # 1000
+    b=float(list[4])      # 0.4
+    c=float(list[6])      # 0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
 
 def tanh2(x,list):
-    alpha=list[0]
-    alpha2=list[1]
-    beta=list[2] # 0.004
-    beta2=list[3]
-    b=list[5]  # 360
-    c=list[6]
+    alpha=float(list[0])  # 0.0
+    alpha2=float(list[1]) # 1.0
+    beta=float(list[2])   # 0.004
+    beta2=float(list[3])  # 1000
+    b=float(list[5])      # 0.6
+    c=float(list[6])      # 0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
 
@@ -110,7 +110,27 @@ parm_ovm = Parameter_read(file_pointer_ovm)
 file_pointer_smm = open(PARM_SMM,'r')
 parm_smm = Parameter_read(file_pointer_smm)
 
-print(parm_smm)
+print("smm-parm")
+print("# alpha",end="")
+print("  alpha2",end="")
+print("  beta",end="")
+print("  beta2",end="")
+print("      b1",end="")
+print("      b2",end="")
+print("     c",end="")
+print("    THRESHOLD")
+
+print("%7.3f" % parm_smm[0],end="")
+print("%7.3f" % parm_smm[1],end="")
+print("%7.3f" % parm_smm[2],end="")
+print("  %7.3f" % parm_smm[3],end="")
+print("%7.3f" % parm_smm[4],end="")
+print("%7.3f" % parm_smm[5],end="")
+print("%7.3f" % parm_smm[6],end="")
+print("%7.3f" % THRESHOLD)
+print(len(parm_smm))
+print("\nparm-OV")
+
 
 #  インスタンス生成
 ovm = OVM_py.Optimal_Velocity_class(parm_ovm)         #  2次元最適速度モデル関係
@@ -157,7 +177,6 @@ else:
 start = time.time()
 now = start
 
-
 key=cv2.waitKey(1)
 vl=0;vr=0
 while key!=ord('q'):
@@ -182,16 +201,9 @@ while key!=ord('q'):
         if lidar_distanceR>0 and lidar_distanceC>0:
             areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
 
+        #print(parm_smm)
         tof_r = tanh1(areaL,parm_smm)
         tof_l = tanh2(areaR,parm_smm)
-        print("\r %6.2f " % (now-start),end="")
-        #print(" dist=%6.2f " % dist, end="")
-        #print(" theta=%6.2f " % theta, end="")
-        print(" v_L=%6.2f " % vl, end="")
-        print(" v_R=%6.2f " % vr, end="")
-        print(" dL=%6.2f " % lidar_distanceL, end="")
-        print(" dC=%6.2f " % lidar_distanceC, end="")
-        print(" dR=%6.2f " % lidar_distanceR, end="")
         #write_fp.write(str('{:.2g}'.format(now-start))+", ")
         #write_fp.write(str(theta) + ", ")
         #write_fp.write("\n")
@@ -215,11 +227,20 @@ while key!=ord('q'):
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
 
+        print("\r %6.2f " % (now-start),end="")
+        #print(" dist=%6.2f " % dist, end="")
+        #print(" theta=%6.2f " % theta, end="")
+        print(" v_L=%6.2f " % vl, end="")
+        print(" v_R=%6.2f " % vr, end="")
+        print(" dL=%6.2f " % lidar_distanceL, end="")
+        print(" dC=%6.2f " % lidar_distanceC, end="")
+        print(" dR=%6.2f " % lidar_distanceR, end="")
+
         if motor_run == 'y':
             mL.run(vl)
             mR.run(vr)
-            if flag == 1:
-                time.sleep(1.0)
+            #if flag == 1:
+                #time.sleep(1.0)
 
         if imshow == 'y':    
             cv2.imshow("frame",frame)
