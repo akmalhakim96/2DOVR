@@ -74,7 +74,7 @@ class PI_CAMERA_CLASS():
       tmp = self.cam.capture_continuous(self.rawCapture, format="bgr", use_video_port="True")
       cap = next(tmp)
       frame = cap.array
-      #print(frame)
+      frame = frame[50:237,:,:]
       hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
       mask = cv2.inRange(hsv, lower, upper)
       image, contours, hierarchy  = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -89,11 +89,6 @@ class PI_CAMERA_CLASS():
          cv2.rectangle(frame, tuple(rect[0:2]), tuple(rect[0:2] + rect[2:4]), (0, 0, 255), thickness=2)
          self.data=list(rect)
          self.data[0]=self.data[0] # レンズのズレ補正
-         #self.data.append(rate)
-         #rint(self.data) 
-         #self.udp.send(frame)
-         #udp2mpl53.send(data)
-         #rate=count/PERIOD
          px=self.data[0]
          py=self.data[1]
          width = self.data[2]

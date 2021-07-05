@@ -25,7 +25,7 @@ import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場
 #sokcet 通信関係 
 import socket
 
-select_hsv = "y"
+select_hsv = "n"
 motor_run = "y"
 imshow = "y"
 
@@ -41,8 +41,8 @@ dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
 
 #  パラメータ記載のファイルの絶対パス
-FILE = "/home/pi/2DOVR/parm_ovm.csv" 
-
+PARM_OVM = "/home/pi/2DOVR/parm_ovm.csv" 
+PARM_SMM = "/home/pi/2DOVR/parm_smm.csv" 
 
 #  実験パラメータ読み込み
 def Parameter_read(file_path):
@@ -59,46 +59,34 @@ def Parameter_read(file_path):
             tmp.append(float(row[3]))
             tmp.append(float(row[4]))
             tmp.append(float(row[5]))
+            tmp.append(float(row[6]))
     return tmp
 
 
 #  物体未認識時のhyperbolic-tan
-def tanh1(x):
-    alpha=0.0
-    alpha2=1.0
-    beta=0.4 # 0.004
-    beta2=1000.00
-    b=0.4  # 280
-    c=0.0
+def tanh1(x,list):
+    alpha=list[0]
+    alpha2=list[1]
+    beta=list[2] # 0.004
+    beta2=list[3]
+    b=list[4]  # 280
+    c=list[6]
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
 
-def tanh2(x):
-    alpha=0.0
-    alpha2=1.0
-    beta=0.4 # 0.004
-    beta2=1000.00
-    b=0.6  # 360
-    c=0.0
+def tanh2(x,list):
+    alpha=list[0]
+    alpha2=list[1]
+    beta=list[2] # 0.004
+    beta2=list[3]
+    b=list[5]  # 360
+    c=list[6]
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
-"""
-def tanh(x):
-    alpha=30.0
-    alpha2=30.0
-    beta=0.004 #  0.004
-    beta2=10.00
-    b=160  #  280
-    c=0
-    f=alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c
-    delta = 0.1 #  beta
-    p = 250     #  b
-    q = 0.0     #  c
-    f = (math.tanh(delta * (x - p) ) + q )
-    return f
-"""
+
 #  各変数定義
-parm = []
+parm_ovm = []
+parm_smm = []
 
 ex_start_time = datetime.datetime.now()
 ex_start_time = str(ex_start_time.strftime('%Y%m%d%H%M%S'))
@@ -110,17 +98,22 @@ hostname = hostname.replace("[",'')
 hostname = hostname.replace("]",'')
 
 write_file = str(hostname) + "-" +str(ex_start_time) + ".txt"
-print(write_file)
+#print(write_file)
 
 #write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
 #write_fp.write("#"+hostname+"\n")
 
 #  パラメータ読み込み
-file_pointer = open(FILE,'r')
-parm = Parameter_read(file_pointer)
+file_pointer_ovm = open(PARM_OVM,'r')
+parm_ovm = Parameter_read(file_pointer_ovm)
+
+file_pointer_smm = open(PARM_SMM,'r')
+parm_smm = Parameter_read(file_pointer_smm)
+
+print(parm_smm)
 
 #  インスタンス生成
-ovm = OVM_py.Optimal_Velocity_class(parm)         #  2次元最適速度モデル関係
+ovm = OVM_py.Optimal_Velocity_class(parm_ovm)         #  2次元最適速度モデル関係
 tofL,tofR,tofC=lidar.start() #  赤外線レーザ(3)
 #tofL,tofR=lidar.start()       #  赤外線レーザ(2)
 print("VL53L0X 接続完了\n")
@@ -189,8 +182,8 @@ while key!=ord('q'):
         if lidar_distanceR>0 and lidar_distanceC>0:
             areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
 
-        tof_r = tanh1(areaL)
-        tof_l = tanh2(areaR)
+        tof_r = tanh1(areaL,parm_smm)
+        tof_l = tanh2(areaR,parm_smm)
         print("\r %6.2f " % (now-start),end="")
         #print(" dist=%6.2f " % dist, end="")
         #print(" theta=%6.2f " % theta, end="")
@@ -223,7 +216,7 @@ while key!=ord('q'):
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
         if flag == 1:
-            time.sleep(0.5)
+            time.sleep(2.0)
 
         if motor_run == 'y':
             mL.run(vl)
