@@ -202,6 +202,7 @@ while key!=ord('q'):
         #write_fp.write(str('{:.2g}'.format(now-start))+", ")
         #write_fp.write(str(theta) + ", ")
         #write_fp.write("\n")
+        flag = 0
 
         if areaL > THRESHOLD and areaR > THRESHOLD:
             if dist == None:
@@ -216,9 +217,13 @@ while key!=ord('q'):
         else:
             vl = 1.0
             vr = 1.0
+            flag = 1
+        
         
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
+        if flag == 1:
+            time.sleep(0.5)
 
         if motor_run == 'y':
             mL.run(vl)
