@@ -216,7 +216,7 @@ while key!=ord('q'):
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
         if flag == 1:
-            time.sleep(2.0)
+            time.sleep(1.0)
 
         if motor_run == 'y':
             mL.run(vl)
