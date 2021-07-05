@@ -207,7 +207,6 @@ while key!=ord('q'):
         #write_fp.write(str('{:.2g}'.format(now-start))+", ")
         #write_fp.write(str(theta) + ", ")
         #write_fp.write("\n")
-        flag = 0
 
         if areaL > THRESHOLD and areaR > THRESHOLD:
             if dist == None:
@@ -219,6 +218,7 @@ while key!=ord('q'):
                 dist = float(dist)
                 # pixyカメラで物体を認識している時
                 vl, vr, omega = ovm.calc(dist,theta,dt)
+        flag = 0
         else:
             vl = 1.0
             vr = 1.0
@@ -240,7 +240,7 @@ while key!=ord('q'):
             mL.run(vl)
             mR.run(vr)
             if flag == 1:
-                time.sleep(1.0)
+                time.sleep(0.5)
 
         if imshow == 'y':    
             cv2.imshow("frame",frame)
