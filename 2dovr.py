@@ -212,15 +212,15 @@ while key!=ord('q'):
             vr = 1.0
             flag = 1
         
-        
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
-        if flag == 1:
-            time.sleep(1.0)
 
         if motor_run == 'y':
             mL.run(vl)
             mR.run(vr)
+            if flag == 1:
+                time.sleep(1.0)
+
         if imshow == 'y':    
             cv2.imshow("frame",frame)
             key=cv2.waitKey(1)
