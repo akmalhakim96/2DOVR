@@ -24,7 +24,7 @@ import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場
 #sokcet 通信関係 
 import file_read as fr
 
-select_hsv = "y"
+select_hsv = "n"
 motor_run = "y"
 imshow = "y"
 
@@ -79,10 +79,14 @@ hostname = hostname.replace("[",'')
 hostname = hostname.replace("]",'')
 
 write_file = str(hostname) + "-" +str(ex_start_time) + ".txt"
-#print(write_file)
 
-#write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
-#write_fp.write("#"+hostname+"\n")
+write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
+write_fp.write("#"+hostname+"\n")
+
+write_fp.write("time, ")
+write_fp.write("vl, ")
+write_fp.write("vr, ")
+write_fp.write("\n")
 
 #  パラメータ読み込み
 parm_ovm = fr.read_parm(PARM_OVM)
@@ -172,9 +176,6 @@ while key!=ord('q'):
 
         tof_r = tanh1(areaL,parm_smm)
         tof_l = tanh2(areaR,parm_smm)
-        #write_fp.write(str('{:.2g}'.format(now-start))+", ")
-        #write_fp.write(str(theta) + ", ")
-        #write_fp.write("\n")
         flag = 0
 
         if areaL > THRESHOLD and areaR > THRESHOLD:
@@ -194,6 +195,11 @@ while key!=ord('q'):
         
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
+
+        write_fp.write(str('{:.3g}'.format(now-start))+", ")
+        write_fp.write(str('{:.3g}'.format(vl)) + ", ")
+        write_fp.write(str('{:.3g}'.format(vr)) + ", ")
+        write_fp.write("\n")
 
         print("\r %6.2f " % (now-start),end="")
         #print(" dist=%6.2f " % dist, end="")
