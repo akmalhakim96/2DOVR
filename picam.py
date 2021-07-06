@@ -74,7 +74,7 @@ class PI_CAMERA_CLASS():
       tmp = self.cam.capture_continuous(self.rawCapture, format="bgr", use_video_port="True")
       cap = next(tmp)
       frame = cap.array
-      frame = frame[50:237,:,:]
+      frame = frame[50:211,:,:]
       hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
       mask = cv2.inRange(hsv, lower, upper)
       image, contours, hierarchy  = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
