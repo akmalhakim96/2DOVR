@@ -25,7 +25,7 @@ import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場
 import file_read as fr
 
 select_hsv = "n"
-motor_run = "y"
+motor_run = "n"
 imshow = "y"
 
 SLEEP = 0.5
@@ -177,6 +177,7 @@ while key!=ord('q'):
 
         tof_r = tanh1(areaL,parm_smm)
         tof_l = tanh2(areaR,parm_smm)
+        #print(tof_r,tof_l)
         flag = 0
 
         if areaL > THRESHOLD and areaR > THRESHOLD:
@@ -185,7 +186,6 @@ while key!=ord('q'):
                 theta = 0.0
                 vl, vr, omega = ovm.calc(dist,theta,dt)
             else:
-                mode = "picam"
                 dist = float(dist)
                 # pixyカメラで物体を認識している時
                 vl, vr, omega = ovm.calc(dist,theta,dt)
@@ -193,7 +193,12 @@ while key!=ord('q'):
             #vl = 1.0
             #vr = 1.0
             flag = 1
-        
+        #print(vl,vr)
+        if vl > 1.25:
+            vl = 1.25
+        if vr > 1.25:
+            vr = 1.25
+ 
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
 
@@ -211,7 +216,6 @@ while key!=ord('q'):
         write_fp.write(str('{:.3g}'.format(vl)) + ", ")
         write_fp.write(str('{:.3g}'.format(vr)) + ", ")
         write_fp.write("\n")
-
         print("\r %6.2f " % (now-start),end="")
         #print(" dist=%6.2f " % dist, end="")
         #print(" theta=%6.2f " % theta, end="")
