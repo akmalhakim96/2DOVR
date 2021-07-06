@@ -211,8 +211,8 @@ while key!=ord('q'):
         print(" dR=%6.2f " % lidar_distanceR, end="")
 
         if motor_run == 'y':
-            mL.run(vl)
-            mR.run(vr)
+            #mL.run(vl)
+            #mR.run(vr)
             #if flag == 1:
                 #time.sleep(SLEEP)
 
