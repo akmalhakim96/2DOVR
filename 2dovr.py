@@ -29,7 +29,7 @@ select_hsv = "y"
 motor_run = "y"
 imshow = "y"
 
-SLEEP = 0.2
+SLEEP = 0.5
 EX_TIME = 3     # (min)
 BUS = 1         # bus number
 I2C_ADDR = 0x54 # I2Cアドレス
@@ -229,7 +229,7 @@ while key!=ord('q'):
             mL.run(vl)
             mR.run(vr)
             if flag == 1:
-                time.sleep(0.5)
+                time.sleep(SLEEP)
 
         if imshow == 'y':    
             cv2.imshow("frame",frame)
