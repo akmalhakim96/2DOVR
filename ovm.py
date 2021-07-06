@@ -56,6 +56,7 @@ def sgn(x):
 class Optimal_Velocity_class:
     #インスタンス生成
     def __init__(self,parm):
+        #print(parm)
         self.vs = parm[0]    #相互作用なしで動き続けるための項 
         self.a = parm[1]     #感応度
         self.alpha = parm[2] #最高速度決定
