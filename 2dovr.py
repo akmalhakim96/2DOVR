@@ -189,8 +189,8 @@ while key!=ord('q'):
                 # pixyカメラで物体を認識している時
                 vl, vr, omega = ovm.calc(dist,theta,dt)
         else:
-            vl = 1.0
-            vr = 1.0
+            #vl = 1.0
+            #vr = 1.0
             flag = 1
         
         vl = vl * tof_l * MAX_SPEED 
@@ -211,8 +211,8 @@ while key!=ord('q'):
         print(" dR=%6.2f " % lidar_distanceR, end="")
 
         if motor_run == 'y':
-            #mL.run(vl)
-            #mR.run(vr)
+            mL.run(vl)
+            mR.run(vr)
             if flag == 1:
                 pass
                 #time.sleep(SLEEP)
