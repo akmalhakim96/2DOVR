@@ -10,14 +10,10 @@ import time
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from subprocess import Popen
-#sokcet tuusinn kannkei
-import socket
-#import socket1a as sk
-
-
+import file_read as fr
 
 class PI_CAMERA_CLASS():
-   def __init__(self):
+   def __init__(self,upper,lower):
       #self.udp = sk.UDP_Send(MY_IP, sk.PICAM_PORT)
       self.select_rect='n' # y(es)/n(o) 検出対象を選ぶかどうか
       self.imshow='y'      # y(es)/n(o) カメラ映像を表示するかどうか，VNC必須
@@ -29,6 +25,11 @@ class PI_CAMERA_CLASS():
       self.C = 0.6182
       self.D = -2.104
       self.E = 0.2202
+
+      self.upper = upper
+      self.lower = lower
+      print("cap_upper,cap_lower")
+      print("  ",self.upper,"     ",self.lower)
       
       # カメラの解像度 例：640x480, 320x240
       self.RES_X=int( 320 )
@@ -74,7 +75,7 @@ class PI_CAMERA_CLASS():
       tmp = self.cam.capture_continuous(self.rawCapture, format="bgr", use_video_port="True")
       cap = next(tmp)
       frame = cap.array
-      frame = frame[50:237,:,:]
+      frame = frame[self.upper:self.lower,:,:]
       hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
       mask = cv2.inRange(hsv, lower, upper)
       image, contours, hierarchy  = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -142,7 +143,9 @@ class PI_CAMERA_CLASS():
 
 if __name__ == "__main__":
     select_hsv="n"     
-    picam = PI_CAMERA_CLASS()
+    FRAME_SIZE = "/home/pi/2DOVR/framesize.csv"
+    upper,lower = fr.read_framesize(FRAME_SIZE)
+    picam = PI_CAMERA_CLASS(upper,lower)
     count = 0
     if select_hsv=='y':
        lower_light,upper_light=picam.calc_hsv()

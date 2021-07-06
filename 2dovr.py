@@ -18,12 +18,11 @@ import numpy as np
 import ovm as OVM_py          # 2次元最適速度モデル関係
 import picam as PICAM_py # picamera関係
 import modules.motor5a as mt         #  (改良版)モーターを回転させるためのモジュール
-#import pixy_210416 as PIXY_py       # Pixyカメラ関係
 import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場合
 #import modules.tof2_3a as lidar      #  赤外線レーザーレーダ 2つの場合
 
 #sokcet 通信関係 
-import socket
+import file_read as fr
 
 select_hsv = "y"
 motor_run = "y"
@@ -43,25 +42,7 @@ THRESHOLD = 0.3 # OVMをon/offするための閾値
 #  パラメータ記載のファイルの絶対パス
 PARM_OVM = "/home/pi/2DOVR/parm_ovm.csv" 
 PARM_SMM = "/home/pi/2DOVR/parm_smm.csv" 
-
-#  実験パラメータ読み込み
-def Parameter_read(file_path):
-    tmp = []
-    reader = csv.reader(file_path)
-    header = next(reader)
-    for row in reader:
-        if len(row) == 0:
-           pass 
-        else:
-            tmp.append(float(row[0]))
-            tmp.append(float(row[1]))
-            tmp.append(float(row[2]))
-            tmp.append(float(row[3]))
-            tmp.append(float(row[4]))
-            tmp.append(float(row[5]))
-            tmp.append(float(row[6]))
-    return tmp
-
+FRAME_SIZE = "/home/pi/2DOVR/framesize.csv"
 
 #  物体未認識時のhyperbolic-tan
 def tanh1(x,list):
@@ -104,11 +85,9 @@ write_file = str(hostname) + "-" +str(ex_start_time) + ".txt"
 #write_fp.write("#"+hostname+"\n")
 
 #  パラメータ読み込み
-file_pointer_ovm = open(PARM_OVM,'r')
-parm_ovm = Parameter_read(file_pointer_ovm)
-
-file_pointer_smm = open(PARM_SMM,'r')
-parm_smm = Parameter_read(file_pointer_smm)
+parm_ovm = fr.read_parm(PARM_OVM)
+parm_smm = fr.read_parm(PARM_SMM)
+upper,lower = fr.read_framesize(FRAME_SIZE)
 
 print("smm-parm")
 print("# alpha",end="")
@@ -138,7 +117,7 @@ tofL,tofR,tofC=lidar.start() #  赤外線レーザ(3)
 #tofL,tofR=lidar.start()       #  赤外線レーザ(2)
 print("VL53L0X 接続完了\n")
 time.sleep(2)
-picam =PICAM_py.PI_CAMERA_CLASS() 
+picam =PICAM_py.PI_CAMERA_CLASS(upper,lower) 
 print("picamera 接続完了\n")
 time.sleep(2)
 mL=mt.Lmotor(GPIO_L)         #  左モーター(gpio17番)
