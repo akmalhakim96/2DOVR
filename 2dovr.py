@@ -213,7 +213,8 @@ while key!=ord('q'):
         if motor_run == 'y':
             #mL.run(vl)
             #mR.run(vr)
-            #if flag == 1:
+            if flag == 1:
+                pass
                 #time.sleep(SLEEP)
 
         if imshow == 'y':    
