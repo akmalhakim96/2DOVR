@@ -130,6 +130,7 @@ mR=mt.Rmotor(GPIO_R)         #  右モーター(gpio18番)
 count = 0
 data = []
 gamma=0.33 # Center weight
+
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
 
 if select_hsv=='y':
@@ -195,10 +196,12 @@ while key!=ord('q'):
         
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
+
         if vl > 100:
             vl = 100
         if vl < -100:
             vl = -100
+
         if vr > 100:
             vr = 100
         if vr < -100:
