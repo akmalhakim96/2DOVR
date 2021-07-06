@@ -144,16 +144,6 @@ time.sleep(2)
 mL=mt.Lmotor(GPIO_L)         #  左モーター(gpio17番)
 mR=mt.Rmotor(GPIO_R)         #  右モーター(gpio18番)
 
-"""
-print("===============================")
-print("実験開始から3分10秒で自動停止します．")
-print("===============================")
-
-print("===============================")
-print("=  実験開始  =")
-print("===============================")
-print()
-"""
 count = 0
 data = []
 gamma=0.33 # Center weight
@@ -201,7 +191,6 @@ while key!=ord('q'):
         if lidar_distanceR>0 and lidar_distanceC>0:
             areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
 
-        #print(parm_smm)
         tof_r = tanh1(areaL,parm_smm)
         tof_l = tanh2(areaR,parm_smm)
         #write_fp.write(str('{:.2g}'.format(now-start))+", ")
@@ -253,21 +242,8 @@ while key!=ord('q'):
         mR.stop()
         mL.stop()
         write_fp.close()
-        #print("Ctrl + C button pressed")
         sys.exit("\nsystem exit ! \n")
 mR.stop()
 mL.stop()
 #write_fp.close()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
-"""
-print()
-print("===============================")
-print("=  実験時間 {:.1f} (sec)".format(now-start))
-print("=  q_s--->")
-print("===============================")
-print()
-print("おつかれさまでした  ^-^/")
-"""
-
-#print("測定回数--->",count)
-#print("測定レート {:.3f} (回数/sec)".format(count/15))
