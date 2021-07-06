@@ -195,6 +195,14 @@ while key!=ord('q'):
         
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
+        if vl > 100:
+            vl = 100
+        if vl < -100:
+            vl = -100
+        if vr > 100:
+            vr = 100
+        if vr < -100:
+            vr = -100
 
         write_fp.write(str('{:.3g}'.format(now-start))+", ")
         write_fp.write(str('{:.3g}'.format(vl)) + ", ")
