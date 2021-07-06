@@ -191,8 +191,8 @@ while key!=ord('q'):
                 # pixyカメラで物体を認識している時
                 vl, vr, omega = ovm.calc(dist,theta,dt)
         else:
-            #vl = 1.0
-            #vr = 1.0
+            vl = 1.0
+            vr = 1.0
             flag = 1
         #print(vl,vr)
         if vl > 1.25:
