@@ -181,7 +181,8 @@ while key!=ord('q'):
         #print(tof_r,tof_l)
         flag = 0
 
-        if areaL > THRESHOLD and areaR > THRESHOLD:
+        #if areaL > THRESHOLD and areaR > THRESHOLD:
+        if areaL > 0 and areaR > 0:
             if dist == None:
                 dist = float(2000)
                 theta = 0.0
