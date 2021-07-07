@@ -181,7 +181,8 @@ while key!=ord('q'):
         #print(tof_r,tof_l)
         flag = 0
 
-        if areaL > THRESHOLD and areaR > THRESHOLD:
+        #if areaL > THRESHOLD and areaR > THRESHOLD:
+        if areaL > 0 and areaR > 0:
             if dist == None:
                 dist = float(2000)
                 theta = 0.0
@@ -191,27 +192,14 @@ while key!=ord('q'):
                 # pixyカメラで物体を認識している時
                 vl, vr, omega = ovm.calc(dist,theta,dt)
         else:
-            vl = 1.0
-            vr = 1.0
+            #vl = 1.0
+            #vr = 1.0
             flag = 1
         #print(vl,vr)
-        if vl > 1.25:
-            vl = 1.25
-        if vr > 1.25:
-            vr = 1.25
  
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
 
-        if vl > 100:
-            vl = 100
-        if vl < -100:
-            vl = -100
-
-        if vr > 100:
-            vr = 100
-        if vr < -100:
-            vr = -100
 
         write_fp.write(str('{:.3g}'.format(now-start))+", ")
         write_fp.write(str('{:.3g}'.format(vl)) + ", ")
