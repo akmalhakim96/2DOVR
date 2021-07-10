@@ -182,7 +182,7 @@ while key!=ord('q'):
         flag = 0
 
         #if areaL > THRESHOLD and areaR > THRESHOLD:
-        if flag=0:
+        if flag==0:
             if dist == None:
                 dist = float(2000)
                 theta = 0.0
