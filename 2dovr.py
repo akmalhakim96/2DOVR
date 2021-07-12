@@ -46,12 +46,20 @@ FRAME_SIZE = "/home/pi/2DOVR/framesize.csv"
 
 #  物体未認識時のhyperbolic-tan
 def tanh1(x,list):
+    """
     alpha=float(list[0])  # 0.0
     alpha2=float(list[1]) # 1.0
     beta=float(list[2])   # 0.004
     beta2=float(list[3])  # 1000
     b=float(list[4])      # 0.4
     c=float(list[6])      # 0.0
+    """
+    alpha=0.0  # 0.0
+    alpha2=1.0 # 1.0
+    beta=0.004   # 0.004
+    beta2=1000  # 1000
+    b=0.4      # 0.4
+    c=0.0      # 0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
 
@@ -195,7 +203,9 @@ while key!=ord('q'):
             vl = 1.0
             vr = 1.0
             flag = 1
-        #print(vl,vr)
+        print(vl,vr)
+        print(tof_l,tof_r)
+        print()
  
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
@@ -205,14 +215,18 @@ while key!=ord('q'):
         write_fp.write(str('{:.6g}'.format(vl)) + ", ")
         write_fp.write(str('{:.6g}'.format(vr)) + ", ")
         write_fp.write("\n")
+        """
         print("\r %6.2f " % (now-start),end="")
         #print(" dist=%6.2f " % dist, end="")
         #print(" theta=%6.2f " % theta, end="")
         print(" v_L=%6.2f " % vl, end="")
         print(" v_R=%6.2f " % vr, end="")
-        print(" dL=%6.2f " % lidar_distanceL, end="")
-        print(" dC=%6.2f " % lidar_distanceC, end="")
-        print(" dR=%6.2f " % lidar_distanceR, end="")
+        #print(" dL=%6.2f " % lidar_distanceL, end="")
+        #print(" dC=%6.2f " % lidar_distanceC, end="")
+        #print(" dR=%6.2f " % lidar_distanceR, end="")
+        #print(" areaL=%6.2f " % areaL, end="")
+        #print(" areaR=%6.2f " % areaR, end="")
+        """
 
         if motor_run == 'y':
             mL.run(vl)
