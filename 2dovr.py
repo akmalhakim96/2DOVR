@@ -82,22 +82,8 @@ def tanh2(x):
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
-"""
-def tanh(x):
-    alpha=30.0
-    alpha2=30.0
-    beta=0.004 #  0.004
-    beta2=10.00
-    b=160  #  280
-    c=0
-    f=alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c
-    delta = 0.1 #  beta
-    p = 250     #  b
-    q = 0.0     #  c
-    f = (math.tanh(delta * (x - p) ) + q )
-    return f
-"""
-#  各変数定義
+
+#  各変数用リスト
 parm = []
 
 ex_start_time = datetime.datetime.now()
