@@ -182,8 +182,7 @@ while key!=ord('q'):
         #print(tof_r,tof_l)
         flag = 0
 
-        #if areaL > THRESHOLD and areaR > THRESHOLD:
-        if flag==0:
+        if areaL > THRESHOLD and areaR > THRESHOLD:
             if dist == None:
                 dist = float(2000)
                 theta = 0.0
@@ -196,12 +195,20 @@ while key!=ord('q'):
             vl = 1.0
             vr = 1.0
             flag = 1
-        print(vl,vr)
-        print(tof_l,tof_r)
-        print()
- 
+        
+
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
+
+        if vl < -100:
+            vl = -100
+        if vl > 100:
+            vl = 100
+
+        if vr < -100:
+            vr = -100
+        if vr > 100:
+            vr = 100
 
 
         write_fp.write(str('{:.6g}'.format(now-start))+", ")
@@ -211,7 +218,7 @@ while key!=ord('q'):
 
         if show_res == 'y':
             print("\r %6.2f " % (now-start),end="")
-            #print(" dist=%6.2f " % dist, end="")
+            print(" dist=%6.2f " % dist, end="")
             #print(" theta=%6.2f " % theta, end="")
             print(" v_L=%6.2f " % vl, end="")
             print(" v_R=%6.2f " % vr, end="")
@@ -231,7 +238,7 @@ while key!=ord('q'):
         if imshow == 'y':    
             cv2.imshow("frame",frame)
             key=cv2.waitKey(1)
-        time.sleep(DT)
+        #time.sleep(DT)
         last = now
         now = time.time()
         dt = now-last
