@@ -52,5 +52,6 @@ def read_framesize(filepath):
 
 
 if __name__ == "__main__":
-    parm = read_parm(FILE1)
+    print(read_parm(FILE1))
+    print()
     print(read_framesize(FILE2))
