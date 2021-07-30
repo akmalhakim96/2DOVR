@@ -196,7 +196,7 @@ while key!=ord('q'):
             vr = 1.0
             flag = 1
         
-
+        dist = float(dist)
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
 
