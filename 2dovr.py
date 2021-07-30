@@ -24,10 +24,10 @@ import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場
 #sokcet 通信関係 
 import file_read as fr
 
-select_hsv = "n"
-show_res = 'n'
+select_hsv = "y"
+show_res = 'y'
 motor_run = "y"
-imshow = "n"
+imshow = "y"
 
 SLEEP = 0.5
 EX_TIME = 3     # (min)
