@@ -110,7 +110,7 @@ hostname = '[%s]' % platform.uname()[1]
 hostname = hostname.replace("[",'')
 hostname = hostname.replace("]",'')
 
-write_file = str(hostname) + "-" +str(ex_start_time) + ".txt"
+write_file = str(hostname)+"multi" + "-" +str(ex_start_time) + ".txt"
 print(write_file)
 
 write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
@@ -204,7 +204,10 @@ while key!=ord('q'):
             areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
 
 
-        tof_r = tanh1(areaL)
+        tof_r = tan        write_fp.write(str('{:.6g}'.format(now-start))+", ")
+        write_fp.write(str('{:.6g}'.format(vl)) + ", ")
+        write_fp.write(str('{:.6g}'.format(vr)) + ", ")
+        write_fp.write("\n")h1(areaL)
         tof_l = tanh2(areaR)
         print("\r %6.2f " % (now-start),end="")
         #print(" dist=%6.2f " % dist, end="")
@@ -214,9 +217,13 @@ while key!=ord('q'):
         print(" dL=%6.2f " % lidar_distanceL, end="")
         print(" dC=%6.2f " % lidar_distanceC, end="")
         print(" dR=%6.2f " % lidar_distanceR, end="")
-        write_fp.write(str('{:.2g}'.format(now-start))+", ")
-        write_fp.write(str(theta) + ", ")
+
+        write_fp.write(str('{:.6g}'.format(now-start))+", ")
+        write_fp.write(str('{:.6g}'.format(vl)) + ", ")
+        write_fp.write(str('{:.6g}'.format(vr)) + ", ")
         write_fp.write("\n")
+
+
         
 
         vl = vl * tof_l * MAX_SPEED 
