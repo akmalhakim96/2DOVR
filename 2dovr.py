@@ -181,10 +181,10 @@ while key!=ord('q'):
         tof_l = tanh2(areaR,parm_smm)
         #print(tof_r,tof_l)
         flag = 0
-
+        
         if areaL > THRESHOLD and areaR > THRESHOLD:
             if dist == None:
-                dist = float(2000)
+                dist = float(2)
                 theta = 0.0
                 vl, vr, omega = ovm.calc(dist,theta,dt)
             else:
@@ -192,11 +192,15 @@ while key!=ord('q'):
                 # pixyカメラで物体を認識している時
                 vl, vr, omega = ovm.calc(dist,theta,dt)
         else:
-            vl = 1.0
-            vr = 1.0
-            flag = 1
-        
-        dist = float(dist)
+            if dist == None:
+                dist=float(2)
+                theta=0.0
+                vl = 1.0
+                vr = 1.0
+            else:
+                dist = float(dist)
+                vl = 1.0
+                vr = 1.0
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
 
@@ -220,13 +224,13 @@ while key!=ord('q'):
             print("\r %6.2f " % (now-start),end="")
             print(" dist=%6.2f " % dist, end="")
             #print(" theta=%6.2f " % theta, end="")
-            print(" v_L=%6.2f " % vl, end="")
-            print(" v_R=%6.2f " % vr, end="")
+            #print(" v_L=%6.2f " % vl, end="")
+            #print(" v_R=%6.2f " % vr, end="")
             #print(" dL=%6.2f " % lidar_distanceL, end="")
             #print(" dC=%6.2f " % lidar_distanceC, end="")
             #print(" dR=%6.2f " % lidar_distanceR, end="")
-            #print(" areaL=%6.2f " % areaL, end="")
-            #print(" areaR=%6.2f " % areaR, end="")
+            print(" areaL=%6.2f " % areaL, end="")
+            print(" areaR=%6.2f " % areaR, end="")
 
         if motor_run == 'y':
             mL.run(vl)
