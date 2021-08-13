@@ -25,7 +25,7 @@ import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場
 import file_read as fr
 
 select_hsv = "n"
-show_res = n''
+show_res = 'n'
 motor_run = "y"
 imshow = "y"
 
