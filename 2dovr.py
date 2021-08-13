@@ -146,8 +146,9 @@ else:
     # 172  164  152 2021/06/22  電気ON
     # 175  153  152 2021/06/24  電気ON
     # 174   97  126 2021/08/06  電気ON,ピンクのテープ貼付
+    # 174  124  136 2021/08/13  電気ON,ピンクのテープ貼付
 
-    H = 174; S = 97; V =126 
+    H = 174; S = 124; V =136 
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
