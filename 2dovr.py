@@ -29,7 +29,7 @@ show_res = 'n'
 motor_run = "y"
 imshow = "n"
 
-SLEEP = 0.5
+SLEEP = 0.05
 EX_TIME = 3     # (min)
 BUS = 1         # bus number
 I2C_ADDR = 0x54 # I2Cアドレス
@@ -237,9 +237,10 @@ while key!=ord('q'):
         if motor_run == 'y':
             mL.run(vl)
             mR.run(vr)
+            time.sleep(SLEEP)
             if flag == 1:
                 pass
-                #time.sleep(SLEEP)
+                time.sleep(SLEEP)
 
         if imshow == 'y':    
             cv2.imshow("frame",frame)
