@@ -237,10 +237,10 @@ while key!=ord('q'):
         if motor_run == 'y':
             mL.run(vl)
             mR.run(vr)
-            time.sleep(SLEEP)
+            #time.sleep(SLEEP)
             if flag == 1:
                 pass
-                time.sleep(SLEEP)
+                #time.sleep(SLEEP)
 
         if imshow == 'y':    
             cv2.imshow("frame",frame)
