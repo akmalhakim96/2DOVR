@@ -36,7 +36,7 @@ I2C_ADDR = 0x54 # I2Cアドレス
 GPIO_L = 17     # 左モーターのgpio 17番
 GPIO_R = 18     # 右モーターのgpio 18番
 MAX_SPEED = 62  # パーセント
-DT = 0.1
+DT = 0.03
 dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
 
@@ -237,15 +237,11 @@ while key!=ord('q'):
         if motor_run == 'y':
             mL.run(vl)
             mR.run(vr)
-            #time.sleep(SLEEP)
-            if flag == 1:
-                pass
-                #time.sleep(SLEEP)
 
         if imshow == 'y':    
             cv2.imshow("frame",frame)
             key=cv2.waitKey(1)
-        #time.sleep(DT)
+        time.sleep(DT)
         last = now
         now = time.time()
         dt = now-last
