@@ -36,7 +36,7 @@ I2C_ADDR = 0x54 # I2Cアドレス
 GPIO_L = 17     # 左モーターのgpio 17番
 GPIO_R = 18     # 右モーターのgpio 18番
 MAX_SPEED = 62  # パーセント
-DT = 0.01
+DT = 0.02
 dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
 
