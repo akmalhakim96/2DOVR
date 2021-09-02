@@ -4,6 +4,8 @@
 #  2021-04-16
 #  Masashi Yamada
 
+#git push用テスト
+
 #  各モジュールインポート
 import csv
 import time
