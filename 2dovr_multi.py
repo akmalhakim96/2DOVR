@@ -17,35 +17,28 @@ import platform
 
 import numpy as np
 #  Pythonファイルインポート 
-import ovm as OVM_py          # 2次元最適速度モデル関係
-import picam as PICAM_py # picamera関係
-import modules.motor5a as mt         #  (改良版)モーターを回転させるためのモジュール
-#import pixy_210416 as PIXY_py       # Pixyカメラ関係
-import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場合
-#import modules.tof2_3a as lidar      #  赤外線レーザーレーダ 2つの場合
+import ovm as OVM_py             # 2次元最適速度モデル関係
+import picam as PICAM_py         # picamera関係
+import modules.motor5a as mt     # (改良版)モーターを回転させるためのモジュール
+#import pixy_210416 as PIXY_py   # Pixyカメラ関係
+import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
+#import modules.tof2_3a as lidar # 赤外線レーザーレーダ 2つの場合
 
-#sokcet 通信関係 
-import socket
-
-
-
-select_hsv = "n"
-motor_run = "y"
-imshow = "y"
+select_hsv = "n" # 画面上で赤いカップを選ぶ場合は"y"
+motor_run = "y"  # モーターを動かす場合は"y"
+imshow = "y"     # カメラが捉えた映像を表示する場合は"y"
 
 SLEEP = 0.2
-EX_TIME = 3    #  (min)
 BUS = 1         # bus number
-I2C_ADDR = 0x54 #I2Cアドレス
-GPIO_L = 17     #  左モーターのgpio 17番
-GPIO_R = 18     #  右モーターのgpio 18番
+I2C_ADDR = 0x54 # I2Cアドレス
+GPIO_L = 17     # 左モーターのgpio 17番
+GPIO_R = 18     # 右モーターのgpio 18番
 MAX_SPEED = 62  # パーセント
 DT = 0.1
 dt = DT
 
 #  パラメータ記載のファイルの絶対パス
 FILE = "/home/pi/2DOVR/parm.csv" 
-
 
 #  実験パラメータ読み込み
 def Parameter_read(file_path):
@@ -65,7 +58,7 @@ def Parameter_read(file_path):
     return tmp
 
 
-#  物体未認識時のhyperbolic-tan
+# 物体未認識時のハイパボリックタンジェントtanh
 def tanh1(x):
     alpha=0.0
     alpha2=1.0
@@ -85,21 +78,7 @@ def tanh2(x):
     c=0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
-"""
-def tanh(x):
-    alpha=30.0
-    alpha2=30.0
-    beta=0.004 #  0.004
-    beta2=10.00
-    b=160  #  280
-    c=0
-    f=alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c
-    delta = 0.1 #  beta
-    p = 250     #  b
-    q = 0.0     #  c
-    f = (math.tanh(delta * (x - p) ) + q )
-    return f
-"""
+
 #  各変数定義
 parm = []
 
@@ -134,16 +113,6 @@ time.sleep(2)
 mL=mt.Lmotor(GPIO_L)         #  左モーター(gpio17番)
 mR=mt.Rmotor(GPIO_R)         #  右モーター(gpio18番)
 
-"""
-print("===============================")
-print("実験開始から3分10秒で自動停止します．")
-print("===============================")
-
-print("===============================")
-print("=  実験開始  =")
-print("===============================")
-print()
-"""
 count = 0
 data = []
 gamma=0.50 # Center weight
@@ -166,7 +135,6 @@ else:
 start = time.time()
 now = start
 
-
 key=cv2.waitKey(1)
 vl=0;vr=0
 while key!=ord('q'):
@@ -180,8 +148,6 @@ while key!=ord('q'):
             # pixyカメラで物体を認識している時
             vl, vr, omega = ovm.calc(dist,theta,dt)
             
-            
-
         else:
             dist = float(2000)
             theta = 0.0
@@ -224,9 +190,6 @@ while key!=ord('q'):
         write_fp.write(str('{:.6g}'.format(vl)) + ", ")
         write_fp.write(str('{:.6g}'.format(vr)) + ", ")
         write_fp.write("\n")
-
-
-        
 
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
