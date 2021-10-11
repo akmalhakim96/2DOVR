@@ -214,10 +214,14 @@ while key!=ord('q'):
         vr = vr * tof_r * MAX_SPEED
 
         vl,vr = max_min_adjust(vl,vr)
-
-        write_fp.write(str('{:.6g}'.format(now-start))+", ")
-        write_fp.write(str('{:.6g}'.format(dist)) + ", ")
-        write_fp.write(str('{:.6g}'.format(theta)) + ", ")
+        if dist ==None:
+            write_fp.write(str('{:.6g}'.format(now-start))+", ")
+            write_fp.write(str('{:.6g}'.format(2)) + ", ")
+            write_fp.write(str('{:.6g}'.format(math.pi/2)) + ", ")
+        else:
+            write_fp.write(str('{:.6g}'.format(now-start))+", ")
+            write_fp.write(str('{:.6g}'.format(dist)) + ", ")
+            write_fp.write(str('{:.6g}'.format(theta)) + ", ")
         write_fp.write("\n")
 
         if show_res == 'y':
