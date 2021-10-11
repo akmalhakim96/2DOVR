@@ -159,7 +159,7 @@ else:
     # 174  124  136 2021/08/13  電気ON,ピンクのテープ貼付
 
     H = 169; S = 99; V =121 
-    h_range = 10; s_range = 50; v_range = 50 # 明度の許容範囲
+    h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
 start = time.time()
