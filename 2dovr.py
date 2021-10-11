@@ -85,8 +85,8 @@ write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
 write_fp.write("#"+hostname+"\n")
 
 write_fp.write("time, ")
-write_fp.write("vl, ")
-write_fp.write("vr, ")
+write_fp.write("distance, ")
+write_fp.write("theta, ")
 write_fp.write("\n")
 
 #  パラメータ読み込み
@@ -148,8 +148,8 @@ else:
     # 174   97  126 2021/08/06  電気ON,ピンクのテープ貼付
     # 174  124  136 2021/08/13  電気ON,ピンクのテープ貼付
 
-    H = 174; S = 124; V =136 
-    h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
+    H = 177; S = 117; V =122 
+    h_range = 10; s_range = 50; v_range = 50 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
 start = time.time()
@@ -218,8 +218,8 @@ while key!=ord('q'):
 
 
         write_fp.write(str('{:.6g}'.format(now-start))+", ")
-        write_fp.write(str('{:.6g}'.format(vl)) + ", ")
-        write_fp.write(str('{:.6g}'.format(vr)) + ", ")
+        write_fp.write(str('{:.6g}'.format(dist)) + ", ")
+        write_fp.write(str('{:.6g}'.format(theta)) + ", ")
         write_fp.write("\n")
 
         if show_res == 'y':
