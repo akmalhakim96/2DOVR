@@ -12,25 +12,22 @@ import sys
 import cv2
 import datetime
 import platform
-
 import numpy as np
-#  Pythonファイルインポート 
-import ovm as OVM_py          # 2次元最適速度モデル関係
-import picam as PICAM_py # picamera関係
-import modules.motor5a as mt         #  (改良版)モーターを回転させるためのモジュール
-import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場合
-#import modules.tof2_3a as lidar      #  赤外線レーザーレーダ 2つの場合
 
-#sokcet 通信関係 
+# Pythonファイルインポート 
+import ovm as OVM_py             # 2次元最適速度モデル関係
+import picam as PICAM_py         # picamera関係
+import modules.motor5a as mt     # モーターを回転させるためのモジュール
+import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
+#import modules.tof2_3a as lidar # 赤外線レーザーレーダ 2つの場合
 import file_read as fr
 
-select_hsv = "n"
-show_res = 'n'
-motor_run = "y"
-imshow = "n"
+select_hsv = "n" # 画面上で対象物を選択する場合は"y"
+show_res = 'n'   # モータ出力や距離センサの値を表示する場合は "y"
+motor_run = "y"  # モータを回転させる場合は"y"
+imshow = "n"     # カメラが捉えた映像を表示する場合は"y"
 
 SLEEP = 0.05
-EX_TIME = 3     # (min)
 BUS = 1         # bus number
 I2C_ADDR = 0x54 # I2Cアドレス
 GPIO_L = 17     # 左モーターのgpio 17番
@@ -65,6 +62,19 @@ def tanh2(x,list):
     c=float(list[6])      # 0.0
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
+
+def max_min_adjust(vl,vr):
+    if vl > 100:
+        vl = 100
+    if vl < -100:
+        vl = -100
+
+    if vr > 100:
+        vr = 100
+    if vr < -100:
+        vr = -100
+
+    return vl,vr
 
 #  各変数定義
 parm_ovm = []
@@ -181,41 +191,29 @@ while key!=ord('q'):
 
         tof_r = tanh1(areaL,parm_smm)
         tof_l = tanh2(areaR,parm_smm)
-        #print(tof_r,tof_l)
         flag = 0
         
+        # vl,vrは2次元最適速度モデルで決定される速度
+        # tof_l,tof_rは感覚運動写像で決定される速度 
+
         if areaL > THRESHOLD and areaR > THRESHOLD:
             if dist == None:
+                # 進行方向前方に障害物なし && 赤いカップ見えていない
                 dist = float(2)
                 theta = 0.0
                 vl, vr, omega = ovm.calc(dist,theta,dt)
             else:
-                dist = float(dist)
-                # pixyカメラで物体を認識している時
+                # 進行方向前方に障害物なし && 他のロボット認識している
+                dist = float(dist) 
                 vl, vr, omega = ovm.calc(dist,theta,dt)
         else:
-            if dist == None:
-                dist=float(2)
-                theta=0.0
-                vl = 1.0
-                vr = 1.0
-            else:
-                dist = float(dist)
-                vl = 1.0
-                vr = 1.0
+            vl = 1.0
+            vr = 1.0
+
         vl = vl * tof_l * MAX_SPEED 
         vr = vr * tof_r * MAX_SPEED
 
-        if vl < -100:
-            vl = -100
-        if vl > 100:
-            vl = 100
-
-        if vr < -100:
-            vr = -100
-        if vr > 100:
-            vr = 100
-
+        vl,vr = max_min_adjust(vl,vr)
 
         write_fp.write(str('{:.6g}'.format(now-start))+", ")
         write_fp.write(str('{:.6g}'.format(dist)) + ", ")
@@ -252,5 +250,5 @@ while key!=ord('q'):
         sys.exit("\nsystem exit ! \n")
 mR.stop()
 mL.stop()
-#write_fp.close()
+write_fp.close()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
