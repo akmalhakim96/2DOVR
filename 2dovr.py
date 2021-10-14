@@ -27,6 +27,9 @@ show_res = 'y'   # モータ出力や距離センサの値を表示する場合�
 motor_run = "y"  # モータを回転させる場合は"y"
 imshow = "y"     # カメラが捉えた映像を表示する場合は"y"
 
+TURN_TIME=1.2
+TURN_POWER=100
+
 SLEEP = 0.05
 BUS = 1         # bus number
 I2C_ADDR = 0x54 # I2Cアドレス
@@ -204,13 +207,13 @@ while key!=ord('q'):
            vl, vr, omega = ovm.calc(dist,theta,dt)
         else:
             if areaL<areaR:
-                mL.run(60)
-                mR.run(-60)
-                time.sleep(1.7)
+                mL.run(TURN_POWER)
+                mR.run(-TURN_POWER)
+                time.sleep(TURN_TIME)
             else:
-                mL.run(-60)
-                mR.run(60)
-                time.sleep(1.7)
+                mL.run(-TURN_POWER)
+                mR.run(TURN_POWER)
+                time.sleep(TURN_TIME)
             
 
         vl = vl * MAX_SPEED 
