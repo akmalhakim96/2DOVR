@@ -236,11 +236,11 @@ while key!=ord('q'):
             #print(" theta=%6.2f " % theta, end="")
             #print(" v_L=%6.2f " % vl, end="")
             #print(" v_R=%6.2f " % vr, end="")
-            #print(" dL=%6.2f " % lidar_distanceL, end="")
-            #print(" dC=%6.2f " % lidar_distanceC, end="")
-            #print(" dR=%6.2f " % lidar_distanceR, end="")
-            print(" areaL=%6.2f " % areaL, end="")
-            print(" areaR=%6.2f " % areaR, end="")
+            print(" dL=%6.2f " % lidar_distanceL, end="")
+            print(" dC=%6.2f " % lidar_distanceC, end="")
+            print(" dR=%6.2f " % lidar_distanceR, end="")
+            #print(" areaL=%6.2f " % areaL, end="")
+            #print(" areaR=%6.2f " % areaR, end="")
 
         if motor_run == 'y':
             mL.run(vl)
