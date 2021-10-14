@@ -206,11 +206,11 @@ while key!=ord('q'):
             if areaL<areaR:
                 mL.run(60)
                 mR.run(-60)
-                time.sleep(1.0)
+                time.sleep(2.0)
             else:
                 mL.run(-60)
                 mR.run(60)
-                time.sleep(1.0)
+                time.sleep(2.0)
             
 
         vl = vl * MAX_SPEED 
