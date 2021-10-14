@@ -189,8 +189,8 @@ while key!=ord('q'):
         if lidar_distanceR>0 and lidar_distanceC>0:
             areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
 
-        tof_r = tanh1(areaL,parm_smm)
-        tof_l = tanh2(areaR,parm_smm)
+        #tof_r = tanh1(areaL,parm_smm)
+        #tof_l = tanh2(areaR,parm_smm)
         flag = 0
         
         # vl,vrは2次元最適速度モデルで決定される速度
@@ -207,11 +207,18 @@ while key!=ord('q'):
                 dist = float(dist) 
                 vl, vr, omega = ovm.calc(dist,theta,dt)
         else:
-            vl = 1.0
-            vr = 1.0
+            if areaL<areaR:
+                mL.run(60)
+                mR.run(-60)
+                time.sleep(1.0)
+            else:
+                mL.run(-60)
+                mR.run(60)
+                time.sleep(1.0)
+            
 
-        vl = vl * tof_l * MAX_SPEED 
-        vr = vr * tof_r * MAX_SPEED
+        vl = vl * MAX_SPEED 
+        vr = vr * MAX_SPEED
 
         vl,vr = max_min_adjust(vl,vr)
         if dist ==None:
