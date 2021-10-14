@@ -170,6 +170,10 @@ vl=0;vr=0
 while key!=ord('q'):
     #  実験中
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
+    if dist==None:
+        dist=2.0
+        theta=0.0
+        
     count = count + 1
     try :
         lidar_distanceL=tofL.get_distance()/1000
@@ -197,24 +201,16 @@ while key!=ord('q'):
         # tof_l,tof_rは感覚運動写像で決定される速度 
 
         if areaL > THRESHOLD and areaR > THRESHOLD:
-            if dist == None:
-                # 進行方向前方に障害物なし && 赤いカップ見えていない
-                dist = float(2)
-                theta = 0.0
-                vl, vr, omega = ovm.calc(dist,theta,dt)
-            else:
-                # 進行方向前方に障害物なし && 他のロボット認識している
-                dist = float(dist) 
-                vl, vr, omega = ovm.calc(dist,theta,dt)
+           vl, vr, omega = ovm.calc(dist,theta,dt)
         else:
             if areaL<areaR:
                 mL.run(60)
                 mR.run(-60)
-                time.sleep(1.0)
+                time.sleep(0.5)
             else:
                 mL.run(-60)
                 mR.run(60)
-                time.sleep(1.0)
+                time.sleep(0.5)
             
 
         vl = vl * MAX_SPEED 
