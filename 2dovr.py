@@ -23,9 +23,9 @@ import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
 import file_read as fr
 
 select_hsv = "n" # 画面上で対象物を選択する場合は"y"
-show_res = 'y'   # モータ出力や距離センサの値を表示する場合は "y"
+show_res = 'n'   # モータ出力や距離センサの値を表示する場合は "y"
 motor_run = "y"  # モータを回転させる場合は"y"
-imshow = "y"     # カメラが捉えた映像を表示する場合は"y"
+imshow = "n"     # カメラが捉えた映像を表示する場合は"y"
 
 TURN_TIME=0.5
 TURN_POWER=100
@@ -161,7 +161,7 @@ else:
     # 174   97  126 2021/08/06  電気ON,ピンクのテープ貼付
     # 174  124  136 2021/08/13  電気ON,ピンクのテープ貼付
 
-    H = 168; S = 106; V =188 
+    H = 168; S = 114; V =193 
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
