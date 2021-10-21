@@ -20,9 +20,14 @@ Two dimensional optimal velocity robot
 
 
 ## History
+2021 10/19
+2dovr.py : 実行するソースコード
+past_srcというディレクトリを作成しました。
+これは過去のソースコードを入れておくディレクトリです。
+2dovr_multi.pyはOVとSMMを掛け算して出力を求めていたものです。
+2dovr_211014は壁に沿う動きを創発したソースコードです。
+
 2021 9/23
-
-
 一斉スタート用のプログラムをparamiko_2dovr内部に置きました
 
 
