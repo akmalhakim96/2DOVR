@@ -27,6 +27,7 @@ show_res = 'n'   # モータ出力や距離センサの値を表示する場合�
 motor_run = "y"  # モータを回転させる場合は"y"
 imshow = "n"     # カメラが捉えた映像を表示する場合は"y"
 
+# 弾性散乱のための変数
 TURN_TIME=0.3
 TURN_POWER=100
 
@@ -42,31 +43,9 @@ THRESHOLD = 0.2 # OVMをon/offするための閾値
 
 #  パラメータ記載のファイルの絶対パス
 PARM_OVM = "/home/pi/2DOVR/parm_ovm.csv" 
-PARM_SMM = "/home/pi/2DOVR/parm_smm.csv" 
 FRAME_SIZE = "/home/pi/2DOVR/framesize.csv"
 
-#  物体未認識時のhyperbolic-tan
-def tanh1(x,list):
-    alpha=float(list[0])  # 0.0
-    alpha2=float(list[1]) # 1.0
-    beta=float(list[2])   # 0.004
-    beta2=float(list[3])  # 1000
-    b=float(list[4])      # 0.4
-    c=float(list[6])      # 0.0
-    f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
-    return f
-
-def tanh2(x,list):
-    alpha=float(list[0])  # 0.0
-    alpha2=float(list[1]) # 1.0
-    beta=float(list[2])   # 0.004
-    beta2=float(list[3])  # 1000
-    b=float(list[5])      # 0.6
-    c=float(list[6])      # 0.0
-    f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
-    return f
-
-def max_min_adjust(vl,vr):
+def motor_out_adjust(vl,vr):
     if vl > 100:
         vl = 100
     if vl < -100:
@@ -79,59 +58,27 @@ def max_min_adjust(vl,vr):
 
     return vl,vr
 
+def tof_adjust(distL,distC,distR):
+    if distL > 2:
+        distL = 2
+
+    if distC > 2:
+        distC = 2
+
+    if distR > 2:
+        distR = 2
+
+    return distL,distC,distR
+
 #  各変数定義
 parm_ovm = []
-parm_smm = []
-
-ex_start_time = datetime.datetime.now()
-ex_start_time = str(ex_start_time.strftime('%Y%m%d%H%M%S'))
-ex_start_time = ex_start_time.replace("'",'')
-ex_start_time = ex_start_time.replace(" ",'')
-
-hostname = '[%s]' % platform.uname()[1]
-hostname = hostname.replace("[",'')
-hostname = hostname.replace("]",'')
-
-write_file = str(hostname) + "-" +str(ex_start_time) + ".txt"
-
-write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
-write_fp.write("#"+hostname+"\n")
-
-write_fp.write("time, ")
-write_fp.write("distance, ")
-write_fp.write("theta, ")
-write_fp.write("\n")
 
 #  パラメータ読み込み
 parm_ovm = fr.read_parm(PARM_OVM)
-parm_smm = fr.read_parm(PARM_SMM)
 upper,lower = fr.read_framesize(FRAME_SIZE)
-
-print("smm-parm")
-print("# alpha",end="")
-print("  alpha2",end="")
-print("  beta",end="")
-print("  beta2",end="")
-print("      b1",end="")
-print("      b2",end="")
-print("     c",end="")
-print("    THRESHOLD")
-
-print("%7.3f" % parm_smm[0],end="")
-print("%7.3f" % parm_smm[1],end="")
-print("%7.3f" % parm_smm[2],end="")
-print("  %7.3f" % parm_smm[3],end="")
-print("%7.3f" % parm_smm[4],end="")
-print("%7.3f" % parm_smm[5],end="")
-print("%7.3f" % parm_smm[6],end="")
-print("%7.3f" % THRESHOLD)
-print(len(parm_smm))
-print("\nparm-OV")
-
 
 #  インスタンス生成
 ovm = OVM_py.Optimal_Velocity_class(parm_ovm)         #  2次元最適速度モデル関係
-print(parm_ovm)
 tofL,tofR,tofC=lidar.start() #  赤外線レーザ(3)
 #tofL,tofR=lidar.start()       #  赤外線レーザ(2)
 print("VL53L0X 接続完了\n")
@@ -139,10 +86,11 @@ time.sleep(2)
 picam =PICAM_py.PI_CAMERA_CLASS(upper,lower) 
 print("picamera 接続完了\n")
 time.sleep(2)
+print("\nparm-OV")
+print(parm_ovm)
 mL=mt.Lmotor(GPIO_L)         #  左モーター(gpio17番)
 mR=mt.Rmotor(GPIO_R)         #  右モーター(gpio18番)
 
-count = 0
 data = []
 gamma=0.33 # Center weight
 
@@ -153,14 +101,6 @@ if select_hsv=='y':
 else:
     #Red Cup H:S:V=3:140:129
     # h,s,v = 171,106,138
-    # 177  139  141 2021/06/01  電気OFF
-    # 172  160  148 2021/06/15  電気ON
-    # 179  116  101 2021/06/15  電気ON
-    # 172  164  152 2021/06/22  電気ON
-    # 175  153  152 2021/06/24  電気ON
-    # 174   97  126 2021/08/06  電気ON,ピンクのテープ貼付
-    # 174  124  136 2021/08/13  電気ON,ピンクのテープ貼付
-
     H = 171; S = 110; V =215
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
@@ -176,32 +116,21 @@ while key!=ord('q'):
     if dist==None:
         dist=2.0
         theta=0.0
-        
-    count = count + 1
     try :
-        lidar_distanceL=tofL.get_distance()/1000
-        if lidar_distanceL>2:
-            lidar_distanceL=2
+        distanceL=tofL.get_distance()/1000
 
-        lidar_distanceC=tofC.get_distance()/1000
-        if lidar_distanceC>2:
-            lidar_distanceC=2
+        distanceC=tofC.get_distance()/1000
            
-        lidar_distanceR=tofR.get_distance()/1000
-        if lidar_distanceR>2:
-            lidar_distanceR=2
+        distanceR=tofR.get_distance()/1000
 
-        if lidar_distanceL>0 and lidar_distanceC>0:
-            areaL=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceL))
-        if lidar_distanceR>0 and lidar_distanceC>0:
-            areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
+        distanceL,distanceC,distanceR = tof_adjust(distanceL.distanceC,distanceR)
 
-        #tof_r = tanh1(areaL,parm_smm)
-        #tof_l = tanh2(areaR,parm_smm)
-        flag = 0
-        
+        if distanceL>0 and distanceC>0:
+            areaL=math.exp(gamma*math.log(distanceC))*math.exp((1-gamma)*math.log(distanceL))
+        if distanceR>0 and distanceC>0:
+            areaR=math.exp(gamma*math.log(distanceC))*math.exp((1-gamma)*math.log(distanceR))
+
         # vl,vrは2次元最適速度モデルで決定される速度
-        # tof_l,tof_rは感覚運動写像で決定される速度 
 
         if areaL > THRESHOLD and areaR > THRESHOLD:
            vl, vr, omega = ovm.calc(dist,theta,dt)
@@ -215,30 +144,20 @@ while key!=ord('q'):
                 mR.run(TURN_POWER)
                 time.sleep(TURN_TIME)
             
-
         vl = vl * MAX_SPEED 
         vr = vr * MAX_SPEED
 
-        vl,vr = max_min_adjust(vl,vr)
-        if dist ==None:
-            write_fp.write(str('{:.6g}'.format(now-start))+", ")
-            write_fp.write(str('{:.6g}'.format(2)) + ", ")
-            write_fp.write(str('{:.6g}'.format(math.pi/2)) + ", ")
-        else:
-            write_fp.write(str('{:.6g}'.format(now-start))+", ")
-            write_fp.write(str('{:.6g}'.format(dist)) + ", ")
-            write_fp.write(str('{:.6g}'.format(theta)) + ", ")
-        write_fp.write("\n")
+        vl,vr = motor_out_adjust(vl,vr)
 
         if show_res == 'y':
             print("\r %6.2f " % (now-start),end="")
-            print(" dist=%6.2f " % dist, end="")
+            #print(" dist=%6.2f " % dist, end="")
             #print(" theta=%6.2f " % theta, end="")
             #print(" v_L=%6.2f " % vl, end="")
             #print(" v_R=%6.2f " % vr, end="")
-            print(" dL=%6.2f " % lidar_distanceL, end="")
-            print(" dC=%6.2f " % lidar_distanceC, end="")
-            print(" dR=%6.2f " % lidar_distanceR, end="")
+            print(" dL=%6.2f " % distanceL, end="")
+            print(" dC=%6.2f " % distanceC, end="")
+            print(" dR=%6.2f " % distanceR, end="")
             #print(" areaL=%6.2f " % areaL, end="")
             #print(" areaR=%6.2f " % areaR, end="")
 
@@ -256,9 +175,7 @@ while key!=ord('q'):
     except KeyboardInterrupt:
         mR.stop()
         mL.stop()
-        write_fp.close()
         sys.exit("\nsystem exit ! \n")
 mR.stop()
 mL.stop()
-write_fp.close()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")

@@ -12,25 +12,25 @@ import sys
 import cv2
 import datetime
 import platform
-
 import numpy as np
-#  Pythonファイルインポート 
-import ovm as OVM_py          # 2次元最適速度モデル関係
-import picam as PICAM_py # picamera関係
-import modules.motor5a as mt         #  (改良版)モーターを回転させるためのモジュール
-import modules.vl53_4a as lidar     #  赤外線レーザーレーダ 3つの場合
-#import modules.tof2_3a as lidar      #  赤外線レーザーレーダ 2つの場合
 
-#sokcet 通信関係 
+# Pythonファイルインポート 
+import ovm as OVM_py             # 2次元最適速度モデル関係
+import picam as PICAM_py         # picamera関係
+import modules.motor5a as mt     # モーターを回転させるためのモジュール
+import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
+#import modules.tof2_3a as lidar # 赤外線レーザーレーダ 2つの場合
 import file_read as fr
 
-select_hsv = "n"
-show_res = 'n'
-motor_run = "y"
-imshow = "n"
+select_hsv = "n" # 画面上で対象物を選択する場合は"y"
+show_res = 'n'   # モータ出力や距離センサの値を表示する場合は "y"
+motor_run = "y"  # モータを回転させる場合は"y"
+imshow = "n"     # カメラが捉えた映像を表示する場合は"y"
 
-SLEEP = 0.01
-EX_TIME = 3     # (min)
+TURN_TIME=0.3
+TURN_POWER=100
+
+SLEEP = 0.05
 BUS = 1         # bus number
 I2C_ADDR = 0x54 # I2Cアドレス
 GPIO_L = 17     # 左モーターのgpio 17番
@@ -38,7 +38,7 @@ GPIO_R = 18     # 右モーターのgpio 18番
 MAX_SPEED = 62  # パーセント
 DT = 0.015
 dt = DT
-THRESHOLD = 0.3 # OVMをon/offするための閾値
+THRESHOLD = 0.2 # OVMをon/offするための閾値
 
 #  パラメータ記載のファイルの絶対パス
 PARM_OVM = "/home/pi/2DOVR/parm_ovm.csv" 
@@ -66,6 +66,19 @@ def tanh2(x,list):
     f=(alpha*math.tanh(beta*(x-b)) + alpha2*math.tanh(beta2*(x-b))+c) / (alpha + alpha2 + c)
     return f
 
+def max_min_adjust(vl,vr):
+    if vl > 100:
+        vl = 100
+    if vl < -100:
+        vl = -100
+
+    if vr > 100:
+        vr = 100
+    if vr < -100:
+        vr = -100
+
+    return vl,vr
+
 #  各変数定義
 parm_ovm = []
 parm_smm = []
@@ -85,8 +98,8 @@ write_fp = open("/home/pi/2DOVR/result/"+write_file,"w")
 write_fp.write("#"+hostname+"\n")
 
 write_fp.write("time, ")
-write_fp.write("rate , ")
-write_fp.write("sleep"+str(DT)+",")
+write_fp.write("distance, ")
+write_fp.write("theta, ")
 write_fp.write("\n")
 
 #  パラメータ読み込み
@@ -148,21 +161,22 @@ else:
     # 174   97  126 2021/08/06  電気ON,ピンクのテープ貼付
     # 174  124  136 2021/08/13  電気ON,ピンクのテープ貼付
 
-    H = 174; S = 124; V =136 
+    H = 171; S = 110; V =215
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
 start = time.time()
 now = start
-rate_start = start
-count = 0
 
 key=cv2.waitKey(1)
 vl=0;vr=0
-#while key!=ord('q'):
-while now - start < 15:
+while key!=ord('q'):
     #  実験中
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
+    if dist==None:
+        dist=2.0
+        theta=0.0
+        
     count = count + 1
     try :
         lidar_distanceL=tofL.get_distance()/1000
@@ -182,44 +196,39 @@ while now - start < 15:
         if lidar_distanceR>0 and lidar_distanceC>0:
             areaR=math.exp(gamma*math.log(lidar_distanceC))*math.exp((1-gamma)*math.log(lidar_distanceR))
 
-        tof_r = tanh1(areaL,parm_smm)
-        tof_l = tanh2(areaR,parm_smm)
-        #print(tof_r,tof_l)
+        #tof_r = tanh1(areaL,parm_smm)
+        #tof_l = tanh2(areaR,parm_smm)
         flag = 0
         
+        # vl,vrは2次元最適速度モデルで決定される速度
+        # tof_l,tof_rは感覚運動写像で決定される速度 
+
         if areaL > THRESHOLD and areaR > THRESHOLD:
-            if dist == None:
-                dist = float(2)
-                theta = 0.0
-                vl, vr, omega = ovm.calc(dist,theta,dt)
-            else:
-                dist = float(dist)
-                # pixyカメラで物体を認識している時
-                vl, vr, omega = ovm.calc(dist,theta,dt)
+           vl, vr, omega = ovm.calc(dist,theta,dt)
         else:
-            if dist == None:
-                dist=float(2)
-                theta=0.0
-                vl = 1.0
-                vr = 1.0
+            if areaL<areaR:
+                mL.run(TURN_POWER)
+                mR.run(-TURN_POWER)
+                time.sleep(TURN_TIME)
             else:
-                dist = float(dist)
-                vl = 1.0
-                vr = 1.0
-        vl = vl * tof_l * MAX_SPEED 
-        vr = vr * tof_r * MAX_SPEED
+                mL.run(-TURN_POWER)
+                mR.run(TURN_POWER)
+                time.sleep(TURN_TIME)
+            
 
-        if vl < -100:
-            vl = -100
-        if vl > 100:
-            vl = 100
+        vl = vl * MAX_SPEED 
+        vr = vr * MAX_SPEED
 
-        if vr < -100:
-            vr = -100
-        if vr > 100:
-            vr = 100
-
-
+        vl,vr = max_min_adjust(vl,vr)
+        if dist ==None:
+            write_fp.write(str('{:.6g}'.format(now-start))+", ")
+            write_fp.write(str('{:.6g}'.format(2)) + ", ")
+            write_fp.write(str('{:.6g}'.format(math.pi/2)) + ", ")
+        else:
+            write_fp.write(str('{:.6g}'.format(now-start))+", ")
+            write_fp.write(str('{:.6g}'.format(dist)) + ", ")
+            write_fp.write(str('{:.6g}'.format(theta)) + ", ")
+        write_fp.write("\n")
 
         if show_res == 'y':
             print("\r %6.2f " % (now-start),end="")
@@ -227,11 +236,11 @@ while now - start < 15:
             #print(" theta=%6.2f " % theta, end="")
             #print(" v_L=%6.2f " % vl, end="")
             #print(" v_R=%6.2f " % vr, end="")
-            #print(" dL=%6.2f " % lidar_distanceL, end="")
-            #print(" dC=%6.2f " % lidar_distanceC, end="")
-            #print(" dR=%6.2f " % lidar_distanceR, end="")
-            print(" areaL=%6.2f " % areaL, end="")
-            print(" areaR=%6.2f " % areaR, end="")
+            print(" dL=%6.2f " % lidar_distanceL, end="")
+            print(" dC=%6.2f " % lidar_distanceC, end="")
+            print(" dR=%6.2f " % lidar_distanceR, end="")
+            #print(" areaL=%6.2f " % areaL, end="")
+            #print(" areaR=%6.2f " % areaR, end="")
 
         if motor_run == 'y':
             mL.run(vl)
@@ -240,17 +249,9 @@ while now - start < 15:
         if imshow == 'y':    
             cv2.imshow("frame",frame)
             key=cv2.waitKey(1)
-
-        #time.sleep(DT)
+        time.sleep(DT)
         last = now
         now = time.time()
-        if now - rate_start > 1.0000000000:
-            write_fp.write(str('{:.6g}'.format(now-start))+", ")
-            write_fp.write(str(int(count)))
-            write_fp.write("\n")
-            count = 0
-            rate_start = now
-        count = count + 1
         dt = now-last
     except KeyboardInterrupt:
         mR.stop()
@@ -259,5 +260,5 @@ while now - start < 15:
         sys.exit("\nsystem exit ! \n")
 mR.stop()
 mL.stop()
-#write_fp.close()
+write_fp.close()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
