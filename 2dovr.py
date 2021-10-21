@@ -23,9 +23,9 @@ import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
 import file_read as fr
 
 select_hsv = "n" # 画面上で対象物を選択する場合は"y"
-show_res = 'n'   # モータ出力や距離センサの値を表示する場合は "y"
+show_res = 'y'   # モータ出力や距離センサの値を表示する場合は "y"
 motor_run = "y"  # モータを回転させる場合は"y"
-imshow = "n"     # カメラが捉えた映像を表示する場合は"y"
+imshow = "y"     # カメラが捉えた映像を表示する場合は"y"
 
 # 弾性散乱のための変数
 TURN_TIME=0.3
@@ -123,7 +123,7 @@ while key!=ord('q'):
            
         distanceR=tofR.get_distance()/1000
 
-        distanceL,distanceC,distanceR = tof_adjust(distanceL.distanceC,distanceR)
+        distanceL,distanceC,distanceR = tof_adjust(distanceL,distanceC,distanceR)
 
         if distanceL>0 and distanceC>0:
             areaL=math.exp(gamma*math.log(distanceC))*math.exp((1-gamma)*math.log(distanceL))
