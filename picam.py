@@ -142,7 +142,7 @@ class PI_CAMERA_CLASS():
        
 
 if __name__ == "__main__":
-    select_hsv="n"     
+    select_hsv="y"     
     FRAME_SIZE = "/home/pi/2DOVR/framesize.csv"
     upper,lower = fr.read_framesize(FRAME_SIZE)
     picam = PI_CAMERA_CLASS(upper,lower)
