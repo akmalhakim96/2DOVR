@@ -34,7 +34,7 @@ GPIO_R = 18     # 右モーターのgpio 18番
 MAX_SPEED = 62  # パーセント
 DT = 0.05
 dt = DT
-THRESHOLD = 0.2 # OVMをon/offするための閾値
+THRESHOLD = 0.3 # OVMをon/offするための閾値
 
 def motor_out_adjust(vl,vr):
     if vl > 100:
