@@ -115,8 +115,8 @@ while 1:
             print(" dL=%6.2f " % distanceL, end="")
             print(" dC=%6.2f " % distanceC, end="")
             print(" dR=%6.2f " % distanceR, end="")
-            #print(" areaL=%6.2f " % areaL, end="")
-            #print(" areaR=%6.2f " % areaR, end="")
+            print(" areaL=%6.2f " % areaL, end="")
+            print(" areaR=%6.2f " % areaR, end="")
 
         if motor_run == 'y':
             mL.run(vl)
