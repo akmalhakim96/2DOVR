@@ -35,7 +35,7 @@ MAX_SPEED = 62  # パーセント
 DT = 0.05
 dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
-EX_TIME = 5
+EX_TIME = 5.3
 
 def motor_out_adjust(vl,vr):
     if vl > 100:
