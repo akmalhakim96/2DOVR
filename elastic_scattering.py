@@ -20,7 +20,7 @@ import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
 import file_read as fr
 
 motor_run = "y"  # モータを回転させる場合は"y"
-show_res = "y"  # モータを回転させる場合は"y"
+show_res = "n"  # モータを回転させる場合は"y"
 
 # 弾性散乱のための変数
 TURN_TIME=0.3
