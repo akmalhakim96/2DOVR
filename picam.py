@@ -39,7 +39,7 @@ class PI_CAMERA_CLASS():
       #カメラを初期化，カメラへのアクセス？ルート？オブジェクト作成？
       self.cam = PiCamera()
       self.cam.framerate = 30  #フレームレート
-      self.cam.brightness = 50 #明るさ
+      self.cam.brightness = 60 #明るさ
       #cam.saturation = 60
       #cam.exposure_compensation = 0
       #print(cam.exposure_compensation)
@@ -151,7 +151,7 @@ class PI_CAMERA_CLASS():
        
 
 if __name__ == "__main__":
-    select_hsv="n"     
+    select_hsv="y"     
     FRAME_SIZE = "/home/pi/2DOVR/framesize.csv"
     upper,lower = fr.read_framesize(FRAME_SIZE)
     picam = PI_CAMERA_CLASS(upper,lower)

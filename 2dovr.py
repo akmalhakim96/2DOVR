@@ -39,7 +39,7 @@ GPIO_R = 18     # 右モーターのgpio 18番
 MAX_SPEED = 62  # パーセント
 DT = 0.015
 dt = DT
-THRESHOLD = 0.3 # OVMをon/offするための閾値
+THRESHOLD = 0.2 # OVMをon/offするための閾値
 EX_TIME = 5 
 
 #  パラメータ記載のファイルの絶対パス
@@ -105,8 +105,8 @@ else:
     # h,s,v = 171,106,138
     #H = 171; S = 110; V =215
     # H,S,V = 173,110,215 21/10/26 VRシアター
-    H = 172; S = 150; V =122
-    h_range = 35; s_range = 100; v_range = 100 # 明度の許容範囲
+    H = 173; S = 99; V =200
+    h_range = 10; s_range = 50; v_range = 50 # 明度の許容範囲
     hL = H - h_range
     hU = H + h_range
     sL = S - s_range
