@@ -17,10 +17,11 @@ import numpy as np
 # Pythonファイルインポート 
 import modules.motor5a as mt     # モーターを回転させるためのモジュール
 import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
+import modules.keyin as keyin
 import file_read as fr
 
 motor_run = "y"  # モータを回転させる場合は"y"
-show_res = "n"  # モータを回転させる場合は"y"
+show_res = "y"  # モータを回転させる場合は"y"
 
 # 弾性散乱のための変数
 TURN_TIME=0.3
@@ -68,6 +69,7 @@ print("VL53L0X 接続完了\n")
 time.sleep(2)
 mL=mt.Lmotor(GPIO_L)         #  左モーター(gpio17番)
 mR=mt.Rmotor(GPIO_R)         #  右モーター(gpio18番)
+key = keyin.Keyboard()
 
 data = []
 gamma=0.33 # Center weight
@@ -78,7 +80,8 @@ start = time.time()
 now = start
 
 vl=0;vr=0
-while now-start < EX_TIME*60:
+ch = key.read()
+while ch!="q":
     #  実験中
     try :
         distanceL=tofL.get_distance()/1000
@@ -128,6 +131,7 @@ while now-start < EX_TIME*60:
         last = now
         now = time.time()
         dt = now-last
+        ch = key.read()
     except KeyboardInterrupt:
         mR.stop()
         mL.stop()
