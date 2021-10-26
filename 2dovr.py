@@ -40,7 +40,7 @@ MAX_SPEED = 62  # パーセント
 DT = 0.015
 dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
-EX_TIME = 0.5
+EX_TIME = 1.5 
 
 #  パラメータ記載のファイルの絶対パス
 PARM_OVM = "/home/pi/2DOVR/parm_ovm.csv" 
