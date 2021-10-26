@@ -23,9 +23,9 @@ import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
 import file_read as fr
 
 select_hsv = "n" # 画面上で対象物を選択する場合は"y"
-show_res = 'y'   # モータ出力や距離センサの値を表示する場合は "y"
+show_res = 'n'   # モータ出力や距離センサの値を表示する場合は "y"
 motor_run = "y"  # モータを回転させる場合は"y"
-imshow = "y"     # カメラが捉えた映像を表示する場合は"y"
+imshow = "n"     # カメラが捉えた映像を表示する場合は"y"
 
 # 弾性散乱のための変数
 TURN_TIME=0.3
@@ -40,7 +40,7 @@ MAX_SPEED = 62  # パーセント
 DT = 0.015
 dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
-EX_TIME = 1.5 
+EX_TIME = 5 
 
 #  パラメータ記載のファイルの絶対パス
 PARM_OVM = "/home/pi/2DOVR/parm_ovm.csv" 
@@ -105,10 +105,24 @@ else:
     # h,s,v = 171,106,138
     #H = 171; S = 110; V =215
     # H,S,V = 173,110,215 21/10/26 VRシアター
-    H = 173; S = 119; V =218
-    h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
-    lower_light = np.array([H-h_range, S-s_range, V-v_range])
-    upper_light = np.array([H+h_range, S+s_range, V+v_range])
+    H = 172; S = 150; V =122
+    h_range = 70; s_range = 200; v_range = 200 # 明度の許容範囲
+    hL = H - h_range
+    hU = H + h_range
+    sL = S - s_range
+    sU = S + s_range
+    vL = V - v_range
+    vU = V + v_range
+    if sL < 0:
+        sL = 0
+    if sU > 255:
+        sU = 255
+    if vL < 0:
+        vL = 0
+    if vU > 255:
+        vU = 255
+    lower_light = np.array([hL, sL, vL])
+    upper_light = np.array([hU, sU, vU])
 start = time.time()
 now = start
 
