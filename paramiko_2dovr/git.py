@@ -19,7 +19,7 @@ if ch == "":
 if ch == 'y':
     command = 'git -C /home/pi/2DOVR pull'
 else:
-    command = 'git reset --hard origin/yamada'
+    command = 'git checkout .'
 with open("host.txt") as f:
     s = f.readlines()
 

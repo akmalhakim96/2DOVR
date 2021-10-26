@@ -6,7 +6,8 @@ import time
 
 user = "pi"
 passwd = "ssr2"
-command = 'python3 /home/pi/2DOVR/2dovr.py'
+#command = 'python3 /home/pi/2DOVR/2dovr.py'
+command = 'python3 /home/pi/2DOVR/elastic_scattering.py'
 TIMEOUT=1000
 
 with open("host.txt") as f:
