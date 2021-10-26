@@ -40,6 +40,7 @@ MAX_SPEED = 62  # パーセント
 DT = 0.015
 dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
+EX_TIME = 5
 
 #  パラメータ記載のファイルの絶対パス
 PARM_OVM = "/home/pi/2DOVR/parm_ovm.csv" 
@@ -111,7 +112,7 @@ now = start
 
 key=cv2.waitKey(1)
 vl=0;vr=0
-while key!=ord('q'):
+while now - start < EX_TIME * 60:
     #  実験中
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
     if dist==None:

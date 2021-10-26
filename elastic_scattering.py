@@ -35,6 +35,7 @@ MAX_SPEED = 62  # パーセント
 DT = 0.05
 dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
+EX_TIME = 5
 
 def motor_out_adjust(vl,vr):
     if vl > 100:
@@ -77,7 +78,7 @@ start = time.time()
 now = start
 
 vl=0;vr=0
-while 1:
+while now-start < EX_TIME*60:
     #  実験中
     try :
         distanceL=tofL.get_distance()/1000
