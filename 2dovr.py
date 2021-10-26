@@ -23,9 +23,9 @@ import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
 import file_read as fr
 
 select_hsv = "n" # 画面上で対象物を選択する場合は"y"
-show_res = 'n'   # モータ出力や距離センサの値を表示する場合は "y"
+show_res = 'y'   # モータ出力や距離センサの値を表示する場合は "y"
 motor_run = "y"  # モータを回転させる場合は"y"
-imshow = "n"     # カメラが捉えた映像を表示する場合は"y"
+imshow = "y"     # カメラが捉えた映像を表示する場合は"y"
 
 # 弾性散乱のための変数
 TURN_TIME=0.3
@@ -106,7 +106,7 @@ else:
     #H = 171; S = 110; V =215
     # H,S,V = 173,110,215 21/10/26 VRシアター
     H = 172; S = 150; V =122
-    h_range = 70; s_range = 200; v_range = 200 # 明度の許容範囲
+    h_range = 35; s_range = 100; v_range = 100 # 明度の許容範囲
     hL = H - h_range
     hU = H + h_range
     sL = S - s_range
