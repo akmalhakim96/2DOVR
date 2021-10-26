@@ -40,7 +40,7 @@ MAX_SPEED = 62  # パーセント
 DT = 0.015
 dt = DT
 THRESHOLD = 0.3 # OVMをon/offするための閾値
-EX_TIME = 5
+EX_TIME = 0.5
 
 #  パラメータ記載のファイルの絶対パス
 PARM_OVM = "/home/pi/2DOVR/parm_ovm.csv" 
@@ -104,7 +104,8 @@ else:
     #Red Cup H:S:V=3:140:129
     # h,s,v = 171,106,138
     #H = 171; S = 110; V =215
-    H = 172; S = 107; V =148
+    # H,S,V = 173,110,215 21/10/26 VRシアター
+    H = 173; S = 119; V =218
     h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
     lower_light = np.array([H-h_range, S-s_range, V-v_range])
     upper_light = np.array([H+h_range, S+s_range, V+v_range])
