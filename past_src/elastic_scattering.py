@@ -15,17 +15,12 @@ import platform
 import numpy as np
 
 # Pythonファイルインポート 
-import ovm as OVM_py             # 2次元最適速度モデル関係
-import picam as PICAM_py         # picamera関係
 import modules.motor5a as mt     # モーターを回転させるためのモジュール
 import modules.vl53_4a as lidar  # 赤外線レーザーレーダ 3つの場合
-#import modules.tof2_3a as lidar # 赤外線レーザーレーダ 2つの場合
 import file_read as fr
 
-select_hsv = "n" # 画面上で対象物を選択する場合は"y"
-show_res = 'y'   # モータ出力や距離センサの値を表示する場合は "y"
 motor_run = "y"  # モータを回転させる場合は"y"
-imshow = "y"     # カメラが捉えた映像を表示する場合は"y"
+show_res = "y"  # モータを回転させる場合は"y"
 
 # 弾性散乱のための変数
 TURN_TIME=0.3
@@ -39,12 +34,7 @@ GPIO_R = 18     # 右モーターのgpio 18番
 MAX_SPEED = 62  # パーセント
 DT = 0.015
 dt = DT
-THRESHOLD = 0.3 # OVMをon/offするための閾値
-EX_TIME = 1.5 
-
-#  パラメータ記載のファイルの絶対パス
-PARM_OVM = "/home/pi/2DOVR/parm_ovm.csv" 
-FRAME_SIZE = "/home/pi/2DOVR/framesize.csv"
+THRESHOLD = 0.2 # OVMをon/offするための閾値
 
 def motor_out_adjust(vl,vr):
     if vl > 100:
@@ -71,25 +61,10 @@ def tof_adjust(distL,distC,distR):
 
     return distL,distC,distR
 
-#  各変数定義
-parm_ovm = []
-
-#  パラメータ読み込み
-parm_ovm = fr.read_parm(PARM_OVM)
-upper,lower = fr.read_framesize(FRAME_SIZE)
-
 #  インスタンス生成
-ovm = OVM_py.Optimal_Velocity_class(parm_ovm)         #  2次元最適速度モデル関係
 tofL,tofR,tofC=lidar.start() #  赤外線レーザ(3)
-#tofL,tofR=lidar.start()       #  赤外線レーザ(2)
 print("VL53L0X 接続完了\n")
 time.sleep(2)
-picam =PICAM_py.PI_CAMERA_CLASS(upper,lower) 
-print("picamera 接続完了\n")
-time.sleep(2)
-print("\nparm-OV")
-print(" vs,   a, alpha,beta, b,  c,  None")
-print(parm_ovm)
 mL=mt.Lmotor(GPIO_L)         #  左モーター(gpio17番)
 mR=mt.Rmotor(GPIO_R)         #  右モーター(gpio18番)
 
@@ -98,29 +73,12 @@ gamma=0.33 # Center weight
 
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
 
-if select_hsv=='y':
-    lower_light,upper_light=picam.calc_hsv()
-else:
-    #Red Cup H:S:V=3:140:129
-    # h,s,v = 171,106,138
-    #H = 171; S = 110; V =215
-    # H,S,V = 173,110,215 21/10/26 VRシアター
-    H = 173; S = 119; V =218
-    h_range = 20; s_range = 80; v_range = 80 # 明度の許容範囲
-    lower_light = np.array([H-h_range, S-s_range, V-v_range])
-    upper_light = np.array([H+h_range, S+s_range, V+v_range])
 start = time.time()
 now = start
 
-key=cv2.waitKey(1)
 vl=0;vr=0
-#while now - start < EX_TIME * 60:
 while 1:
     #  実験中
-    dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
-    if dist==None:
-        dist=2.0
-        theta=0.0
     try :
         distanceL=tofL.get_distance()/1000
 
@@ -137,22 +95,16 @@ while 1:
 
         # vl,vrは2次元最適速度モデルで決定される速度
 
-        if areaL > THRESHOLD and areaR > THRESHOLD:
-           vl, vr, omega = ovm.calc(dist,theta,dt)
+        if areaL<areaR:
+            mL.run(TURN_POWER)
+            mR.run(-TURN_POWER)
+            time.sleep(TURN_TIME)
         else:
-            if areaL<areaR:
-                mL.run(TURN_POWER)
-                mR.run(-TURN_POWER)
-                time.sleep(TURN_TIME)
-            else:
-                mL.run(-TURN_POWER)
-                mR.run(TURN_POWER)
-                time.sleep(TURN_TIME)
-            
-        vl = vl * MAX_SPEED 
-        vr = vr * MAX_SPEED
+            mL.run(-TURN_POWER)
+            mR.run(TURN_POWER)
+            time.sleep(TURN_TIME)
 
-        vl,vr = motor_out_adjust(vl,vr)
+        vl,vr = motor_out_adjust(MAX_SPEED,MAX_SPEED)
 
         if show_res == 'y':
             print("\r %6.2f " % (now-start),end="")
@@ -163,16 +115,13 @@ while 1:
             print(" dL=%6.2f " % distanceL, end="")
             print(" dC=%6.2f " % distanceC, end="")
             print(" dR=%6.2f " % distanceR, end="")
-            #print(" areaL=%6.2f " % areaL, end="")
-            #print(" areaR=%6.2f " % areaR, end="")
+            print(" areaL=%6.2f " % areaL, end="")
+            print(" areaR=%6.2f " % areaR, end="")
 
         if motor_run == 'y':
             mL.run(vl)
             mR.run(vr)
 
-        if imshow == 'y':    
-            cv2.imshow("frame",frame)
-            key=cv2.waitKey(1)
         time.sleep(DT)
         last = now
         now = time.time()
@@ -183,5 +132,4 @@ while 1:
         sys.exit("\nsystem exit ! \n")
 mR.stop()
 mL.stop()
-print()
 print("#-- #-- #-- #-- #-- #-- #-- #-- #--")
