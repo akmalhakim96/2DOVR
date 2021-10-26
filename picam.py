@@ -39,8 +39,8 @@ class PI_CAMERA_CLASS():
       #カメラを初期化，カメラへのアクセス？ルート？オブジェクト作成？
       self.cam = PiCamera()
       self.cam.framerate = 30  #フレームレート
-      self.cam.brightness = 60 #明るさ
-      #cam.saturation = 50
+      self.cam.brightness = 50 #明るさ
+      #cam.saturation = 60
       #cam.exposure_compensation = 0
       #print(cam.exposure_compensation)
 
@@ -49,7 +49,7 @@ class PI_CAMERA_CLASS():
       self.cam.awb_mode='auto'
       #　コントラスト設定かな？
       #   #Auto White Balance :list_awb = ['off', 'auto', 'sunlight', 'cloudy', 'shade']
-      self.cam.iso=800
+      self.cam.iso=400
       self.cam.shutter_speed=1000000
       self.cam.exposure_mode = 'off' # off, auto, fixedfps
       time.sleep(3)
@@ -125,24 +125,33 @@ class PI_CAMERA_CLASS():
       self.rawCapture.truncate(0) # clear the stream for next frame
       cv2.destroyAllWindows()
 
-      h_range=10 # 色相の許容範囲
-      s_range=50 # 彩度の許容範囲
-      v_range=50 # 明度の許容範囲
+      h_range=70 # 色相の許容範囲
+      s_range=200 # 彩度の許容範囲
+      v_range=200 # 明度の許容範囲
       #cvtColorでつくったhsv配列はy,xの順序なので注意
       hL=hsv[y,x,0]-h_range
       hU=hsv[y,x,0]+h_range
       sL=hsv[y,x,1]-s_range
+      if sL < 0:
+          sL = 0
       sU=hsv[y,x,1]+s_range
+      if sU > 255:
+          sU = 255
       vL=hsv[y,x,2]-v_range
+      if vL < 0:
+          vL = 0
       vU=hsv[y,x,2]+v_range
+      if vU > 255:
+          vU = 255
       lower_light=np.array([hL,sL,vL])
       upper_light=np.array([hU,sU,vU])
+      print(lower_light,upper_light)
       
       return lower_light,upper_light
        
 
 if __name__ == "__main__":
-    select_hsv="y"     
+    select_hsv="n"     
     FRAME_SIZE = "/home/pi/2DOVR/framesize.csv"
     upper,lower = fr.read_framesize(FRAME_SIZE)
     picam = PI_CAMERA_CLASS(upper,lower)
@@ -152,10 +161,24 @@ if __name__ == "__main__":
     else:
        #Red Cup H:S:V=3:140:129
        # h,s,v = 171,106,138
-       H = 174; S = 151; V = 172
-       h_range = 10; s_range = 80; v_range = 60 # 明度の許容範囲
-       lower_light = np.array([H-h_range, S-s_range, V-v_range])
-       upper_light = np.array([H+h_range, S+s_range, V+v_range])
+       H = 172; S = 150; V = 122
+       h_range = 70; s_range = 200; v_range = 200 # 明度の許容範囲
+       hL=H-h_range
+       hU=H+h_range
+       sL=S-s_range
+       if sL < 0:
+           sL = 0
+       sU=S+s_range
+       if sU > 255:
+           sU = 255
+       vL=V-v_range
+       if vL < 0:
+           vL = 0
+       vU=V+v_range
+       if vU > 255:
+           vU = 255
+       lower_light=np.array([hL,sL,vL])
+       upper_light=np.array([hU,sU,vU])
     while 1:
         try: 
             #picam.calc_dist_theta(lower_light,upper_light)
