@@ -59,7 +59,12 @@ def motor_out_adjust(vl,vr):
 
     return vl,vr
 
-def tof_adjust(distL,distC,distR):
+def tof_get_dist(tofL,tofC,tofR):
+    
+    disL=tofL.get_distance()/1000
+    disC=tofC.get_distance()/1000
+    disR=tofR.get_distance()/1000
+
     if distL > 2:
         distL = 2
 
@@ -70,7 +75,10 @@ def tof_adjust(distL,distC,distR):
         distR = 2
 
     return distL,distC,distR
-
+def synergistic_dist(distL,distC,distR,gamma):
+    areaL=math.exp(gamma*math.log(distC))*math.exp((1-gamma)*math.log(distL))
+    areaR=math.exp(gamma*math.log(distC))*math.exp((1-gamma)*math.log(distR))
+    return areaL, areaR
 #  各変数定義
 parm_ovm = []
 
@@ -130,30 +138,17 @@ key=cv2.waitKey(1)
 vl=0;vr=0
 #while now - start < EX_TIME * 60:
 while key!=ord('q'):
-    #  実験中
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
     if dist==None:
         dist=2.0
         theta=0.0
     try :
-        distanceL=tofL.get_distance()/1000
+        distanceL,distanceC,distanceR = tof_get_dist(tofL,tofC,tofR)
 
-        distanceC=tofC.get_distance()/1000
-           
-        distanceR=tofR.get_distance()/1000
+        if distanceL > 0 and distanceC > 0 and distanceR > 0:
+           areaL, areaR = synergistic_dist(distanceL, distanceC, distanceR)
 
-        distanceL,distanceC,distanceR = tof_adjust(distanceL,distanceC,distanceR)
-
-        if distanceL>0 and distanceC>0:
-            areaL=math.exp(gamma*math.log(distanceC))*math.exp((1-gamma)*math.log(distanceL))
-        if distanceR>0 and distanceC>0:
-            areaR=math.exp(gamma*math.log(distanceC))*math.exp((1-gamma)*math.log(distanceR))
-
-        # vl,vrは2次元最適速度モデルで決定される速度
-
-        if areaL > THRESHOLD and areaR > THRESHOLD:
-           vl, vr, omega = ovm.calc(dist,theta,dt)
-        else:
+        if areaL <= THRESHOLD or areaR <= THRESHOLD:
             if areaL<areaR:
                 mL.run(TURN_POWER)
                 mR.run(-TURN_POWER)
@@ -162,7 +157,9 @@ while key!=ord('q'):
                 mL.run(-TURN_POWER)
                 mR.run(TURN_POWER)
                 time.sleep(TURN_TIME)
-            
+        else:
+            vl, vr, omega = ovm.calc(dist,theta,dt)
+
         vl = vl * MAX_SPEED 
         vr = vr * MAX_SPEED
 
