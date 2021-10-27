@@ -75,10 +75,12 @@ def tof_get_dist(tofL,tofC,tofR):
         distR = 2
 
     return distL,distC,distR
+
 def synergistic_dist(distL,distC,distR,gamma):
     areaL=math.exp(gamma*math.log(distC))*math.exp((1-gamma)*math.log(distL))
     areaR=math.exp(gamma*math.log(distC))*math.exp((1-gamma)*math.log(distR))
     return areaL, areaR
+
 #  各変数定義
 parm_ovm = []
 
@@ -91,10 +93,10 @@ ovm = OVM_py.Optimal_Velocity_class(parm_ovm)         #  2次元最適速度モ�
 tofL,tofR,tofC=lidar.start() #  赤外線レーザ(3)
 #tofL,tofR=lidar.start()       #  赤外線レーザ(2)
 print("VL53L0X 接続完了\n")
-time.sleep(2)
+time.sleep(1)
 picam =PICAM_py.PI_CAMERA_CLASS(upper,lower) 
 print("picamera 接続完了\n")
-time.sleep(2)
+time.sleep(1)
 print("\nparm-OV")
 print(" vs,   a, alpha,beta, b,  c,  None")
 print(parm_ovm)
@@ -131,12 +133,12 @@ else:
         vU = 255
     lower_light = np.array([hL, sL, vL])
     upper_light = np.array([hU, sU, vU])
+
 start = time.time()
 now = start
 
 key=cv2.waitKey(1)
 vl=0;vr=0
-#while now - start < EX_TIME * 60:
 while key!=ord('q'):
     dist,theta,frame = picam.calc_dist_theta(lower_light, upper_light)
     if dist==None:
