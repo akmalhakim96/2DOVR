@@ -61,9 +61,9 @@ def motor_out_adjust(vl,vr):
 
 def tof_get_dist(tofL,tofC,tofR):
     
-    disL=tofL.get_distance()/1000
-    disC=tofC.get_distance()/1000
-    disR=tofR.get_distance()/1000
+    distL=tofL.get_distance()/1000
+    distC=tofC.get_distance()/1000
+    distR=tofR.get_distance()/1000
 
     if distL > 2:
         distL = 2
@@ -115,7 +115,7 @@ else:
     # h,s,v = 171,106,138
     #H = 171; S = 110; V =215
     # H,S,V = 173,110,215 21/10/26 VRシアター
-    H = 173; S = 99; V =200
+    H = 172; S = 89; V =152
     h_range = 10; s_range = 50; v_range = 50 # 明度の許容範囲
     hL = H - h_range
     hU = H + h_range
@@ -148,7 +148,7 @@ while key!=ord('q'):
         distanceL,distanceC,distanceR = tof_get_dist(tofL,tofC,tofR)
 
         if distanceL > 0 and distanceC > 0 and distanceR > 0:
-           areaL, areaR = synergistic_dist(distanceL, distanceC, distanceR)
+           areaL, areaR = synergistic_dist(distanceL, distanceC, distanceR,gamma)
 
         if areaL <= THRESHOLD or areaR <= THRESHOLD:
             if areaL<areaR:
