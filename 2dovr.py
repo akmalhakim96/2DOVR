@@ -115,7 +115,7 @@ else:
     # h,s,v = 171,106,138
     #H = 171; S = 110; V =215
     # H,S,V = 173,110,215 21/10/26 VRシアター
-    H = 172; S = 89; V =152
+    H = 169 ; S =188; V =214
     h_range = 10; s_range = 50; v_range = 50 # 明度の許容範囲
     hL = H - h_range
     hU = H + h_range
