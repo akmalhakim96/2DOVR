@@ -179,12 +179,13 @@ if __name__ == "__main__":
            vU = 255
        lower_light=np.array([hL,sL,vL])
        upper_light=np.array([hU,sU,vU])
-    while 1:
+    key = cv2.waitKey(1)
+    while key!=ord('q'):
         try: 
             #picam.calc_dist_theta(lower_light,upper_light)
             dis, rad, frame = picam.calc_dist_theta(lower_light, upper_light)
             cv2.imshow("test", frame)
-            cv2.waitKey(3)
+            cv2.waitKey(1)
         except KeyboardInterrupt:
             print("ctrl + C ")
             cv2.destroyAllWindows()
