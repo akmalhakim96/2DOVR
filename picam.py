@@ -161,7 +161,7 @@ if __name__ == "__main__":
     else:
        #Red Cup H:S:V=3:140:129
        # h,s,v = 171,106,138
-       H = 172; S = 150; V = 122
+       H = 171; S = 95; V = 137
        h_range = 15; s_range = 50; v_range = 50 # 明度の許容範囲
        hL=H-h_range
        hU=H+h_range
