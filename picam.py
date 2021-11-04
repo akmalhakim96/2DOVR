@@ -125,7 +125,7 @@ class PI_CAMERA_CLASS():
       self.rawCapture.truncate(0) # clear the stream for next frame
       cv2.destroyAllWindows()
 
-      h_range=10 # 色相の許容範囲
+      h_range=15 # 色相の許容範囲
       s_range=50 # 彩度の許容範囲
       v_range=50 # 明度の許容範囲
       #cvtColorでつくったhsv配列はy,xの順序なので注意
@@ -162,7 +162,7 @@ if __name__ == "__main__":
        #Red Cup H:S:V=3:140:129
        # h,s,v = 171,106,138
        H = 172; S = 150; V = 122
-       h_range = 10; s_range = 50; v_range = 50 # 明度の許容範囲
+       h_range = 15; s_range = 50; v_range = 50 # 明度の許容範囲
        hL=H-h_range
        hU=H+h_range
        sL=S-s_range
